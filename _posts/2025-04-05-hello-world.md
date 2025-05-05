@@ -16,4 +16,5 @@ this is my blog
  
  new projects to comE
 
- ![alt text](image.png)
+ <img src=/home/sang4w3/Pictures/Screenshot_2025-04-07_20_53_30.png alt = screenshot>
+ 

@@ -15,3 +15,5 @@ image:
 this is my blog
  
  new projects to comE
+
+ ![alt text](image.png)

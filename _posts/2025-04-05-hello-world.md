@@ -14,16 +14,4 @@ image:
 
 this is my blog
  
- new projects to come
-
-
-
-</pre><td class="rouge-code"><pre>$ nmap -T4 -n -sC -sV -Pn -p- 10.10.152.169
-Nmap scan report for 10.10.152.169
-Host is up (0.19s latency).
-Not shown: 65533 closed tcp ports (reset)
-PORT   STATE SERVICE VERSION
-22/tcp open  ssh     OpenSSH 8.9p1 (protocol 2.0)
-80/tcp open  http    Apache httpd 2.4.62 ((Debian))
-|_http-server-header: Apache/2.4.62 (Debian)
-|_http-title: Image Grid
+ new projects to comE

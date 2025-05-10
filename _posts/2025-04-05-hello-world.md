@@ -1,7 +1,7 @@
 ---
 title: "hello world"
 date: 2025-04-05
-categories: [hello world]
+categories: [tryhack me]
 tags: [hello world]
 author: Paschal
 image:

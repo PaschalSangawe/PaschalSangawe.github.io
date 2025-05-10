@@ -23,3 +23,5 @@ this is my blog
 ```
  
  image src="/home/sang4w3/Downloads/hela.jpeg" 
+ <img src="Downloads/hela.jpeg" alt="My Project Image">
+

@@ -16,7 +16,9 @@ timezone:
 
 title: Paschal Sangawe # the main title
 
-tagline: My personal blog # it will display as the subtitle
+tagline: 🎓 Cybersecurity & Digital Forensics Student | 🔍 Passionate About Ethical Hacking
+🔐 CTFs | 🛡️ Blue Team & Red Team Explorer | 💻 Always Learning
+📍PortSwigger | TryHackMe | HackerOne (Beginner)# it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   blog, Paschal Sangawe ,github
@@ -98,7 +100,7 @@ theme_mode: # [light | dark]
 cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar: https://x.com/KidayoLade60178/photo
+avatar: https://unsplash.com/photos/low-angle-of-hacker-installing-malicious-software-on-data-center-servers-using-laptop-9nk2antk4Bw
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.

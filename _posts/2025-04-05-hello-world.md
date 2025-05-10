@@ -22,7 +22,5 @@ this is my blog
 
 ```
  
- image src="/home/sang4w3/Downloads/hela.jpeg" 
- <img src="/home/sang4w3/Downloads/hela.jpeg" alt="My Project Image">
+ <img src="images/hela.jpeg" alt="My Project Image">
 
-_posts/image.png

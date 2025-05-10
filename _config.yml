@@ -16,9 +16,7 @@ timezone:
 
 title: Paschal Sangawe # the main title
 
-tagline: 🎓 Cybersecurity & Digital Forensics Student | 🔍 Passionate About Ethical Hacking
-🔐 CTFs | 🛡️ Blue Team & Red Team Explorer | 💻 Always Learning
-📍PortSwigger | TryHackMe | HackerOne (Beginner)# it will display as the subtitle
+tagline: 🎓 Cybersecurity & Digital Forensics Student | 🔍 Passionate About Ethical Hacking 🔐 CTFs | 🛡️ Blue Team & Red Team Explorer | 💻 Always Learning 📍PortSwigger | TryHackMe | HackerOne (Beginner)# it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   blog, Paschal Sangawe ,github

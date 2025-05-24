@@ -185,6 +185,7 @@ defaults:
   - scope:
       path: _drafts
     values:
+      author: Paschal Sangawe
       comments: false
   - scope:
       path: ""

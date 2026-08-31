@@ -7,4 +7,3 @@ description: "A walkthrough of a file upload vulnerability found during web pene
 author: Paschal Sangawe
 ---
 
-This is a sample post showing the new category/tag structure. Replace this content with your real writeup.

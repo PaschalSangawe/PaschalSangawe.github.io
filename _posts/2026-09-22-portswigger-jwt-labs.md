@@ -85,6 +85,10 @@ The token is signed with HS256 using a guessable secret.
 hashcat -a 0 -m 16500 <YOUR-JWT> /path/to/jwt.secrets.list
 ```
 
+> **Picture goes here (#6).** Capture this request/response or command step in Burp/terminal. Key line: `hashcat -a 0 -m 16500 <YOUR-JWT> /path/to/jwt.secrets.list`.
+> _Save as_ `images/portswigger-jwt-labs/6.png` _then replace this block with_ `![Lab 3 — JWT authentication bypass via weak signing key](/images/portswigger-jwt-labs/6.png)`_._
+
+
 The secret is `secret1`.
 2. Base64-encode the secret. In **JWT Editor Keys → New Symmetric Key → Generate**, replace the `k` value with the Base64 secret.
 3. Back in Repeater, set `sub` to `administrator`, click **Sign**, choose the key, keep **Don't modify header**.
@@ -92,12 +96,12 @@ The secret is `secret1`.
 
 > **Wordlist:** PortSwigger provides a `jwt.secrets.list`; `rockyou` or the `jwt-secrets` list also work.
 
-> **Picture goes here (#6).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-jwt-labs/6.png` _then replace this block with_ `![Lab 3 — JWT authentication bypass via weak signing key](/images/portswigger-jwt-labs/6.png)`_._
+> **Picture goes here (#7).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-jwt-labs/7.png` _then replace this block with_ `![Lab 3 — JWT authentication bypass via weak signing key](/images/portswigger-jwt-labs/7.png)`_._
 
 ## Lab 4 — JWT authentication bypass via jwk header injection
-> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `jwk`.
-> _Save as_ `images/portswigger-jwt-labs/7.png` _then replace this block with_ `![Lab 4 — JWT authentication bypass via jwk header injection](/images/portswigger-jwt-labs/7.png)`_._
+> **Picture goes here (#8).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `jwk`.
+> _Save as_ `images/portswigger-jwt-labs/8.png` _then replace this block with_ `![Lab 4 — JWT authentication bypass via jwk header injection](/images/portswigger-jwt-labs/8.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -112,12 +116,12 @@ If the server reads the verification key from the token's `jwk` header, you cont
 
 > **Manual route:** add the `jwk` yourself and set `kid` to match the embedded key's `kid`.
 
-> **Picture goes here (#8).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-jwt-labs/8.png` _then replace this block with_ `![Lab 4 — JWT authentication bypass via jwk header injection](/images/portswigger-jwt-labs/8.png)`_._
+> **Picture goes here (#9).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-jwt-labs/9.png` _then replace this block with_ `![Lab 4 — JWT authentication bypass via jwk header injection](/images/portswigger-jwt-labs/9.png)`_._
 
 ## Lab 5 — JWT authentication bypass via jku header injection
-> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `{`.
-> _Save as_ `images/portswigger-jwt-labs/9.png` _then replace this block with_ `![Lab 5 — JWT authentication bypass via jku header injection](/images/portswigger-jwt-labs/9.png)`_._
+> **Picture goes here (#10).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `{`.
+> _Save as_ `images/portswigger-jwt-labs/10.png` _then replace this block with_ `![Lab 5 — JWT authentication bypass via jku header injection](/images/portswigger-jwt-labs/10.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -141,15 +145,19 @@ If the server reads the verification key from the token's `jwk` header, you cont
 }
 ```
 
+> **Picture goes here (#11).** Capture this request/response or command step in Burp/terminal. Key line: `{`.
+> _Save as_ `images/portswigger-jwt-labs/11.png` _then replace this block with_ `![Lab 5 — JWT authentication bypass via jku header injection](/images/portswigger-jwt-labs/11.png)`_._
+
+
 3. In the token header, set `kid` to your key's `kid` and add `jku` pointing at the exploit server.
 4. Set `sub` to `administrator`, **Sign** with your RSA key (Don't modify header), send `/admin`, delete `carlos`.
 
-> **Picture goes here (#10).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-jwt-labs/10.png` _then replace this block with_ `![Lab 5 — JWT authentication bypass via jku header injection](/images/portswigger-jwt-labs/10.png)`_._
+> **Picture goes here (#12).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-jwt-labs/12.png` _then replace this block with_ `![Lab 5 — JWT authentication bypass via jku header injection](/images/portswigger-jwt-labs/12.png)`_._
 
 ## Lab 6 — JWT authentication bypass via kid header path traversal
-> **Picture goes here (#11).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `../../../../../../../dev/null`.
-> _Save as_ `images/portswigger-jwt-labs/11.png` _then replace this block with_ `![Lab 6 — JWT authentication bypass via kid header path traversal](/images/portswigger-jwt-labs/11.png)`_._
+> **Picture goes here (#13).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `../../../../../../../dev/null`.
+> _Save as_ `images/portswigger-jwt-labs/13.png` _then replace this block with_ `![Lab 6 — JWT authentication bypass via kid header path traversal](/images/portswigger-jwt-labs/13.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -164,15 +172,19 @@ If `kid` is used as a filesystem path to look up the key, traverse to a file who
 ../../../../../../../dev/null
 ```
 
+> **Picture goes here (#14).** Capture this request/response or command step in Burp/terminal. Key line: `../../../../../../../dev/null`.
+> _Save as_ `images/portswigger-jwt-labs/14.png` _then replace this block with_ `![Lab 6 — JWT authentication bypass via kid header path traversal](/images/portswigger-jwt-labs/14.png)`_._
+
+
 3. Set `sub` to `administrator`, **Sign** with the empty symmetric key (Don't modify header).
 4. Send `/admin`, delete `carlos`. The token is effectively signed with an empty secret.
 
-> **Picture goes here (#12).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-jwt-labs/12.png` _then replace this block with_ `![Lab 6 — JWT authentication bypass via kid header path traversal](/images/portswigger-jwt-labs/12.png)`_._
+> **Picture goes here (#15).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-jwt-labs/15.png` _then replace this block with_ `![Lab 6 — JWT authentication bypass via kid header path traversal](/images/portswigger-jwt-labs/15.png)`_._
 
 ## Lab 7 — Algorithm confusion (RS256 to HS256)
-> **Picture goes here (#13).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `/jwks.json`.
-> _Save as_ `images/portswigger-jwt-labs/13.png` _then replace this block with_ `![Lab 7 — Algorithm confusion (RS256 to HS256)](/images/portswigger-jwt-labs/13.png)`_._
+> **Picture goes here (#16).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `/jwks.json`.
+> _Save as_ `images/portswigger-jwt-labs/16.png` _then replace this block with_ `![Lab 7 — Algorithm confusion (RS256 to HS256)](/images/portswigger-jwt-labs/16.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -187,12 +199,12 @@ When the server accepts both RS256 and HS256, you can sign with HS256 using the 
 5. In the token, set `alg` to `HS256`, set `sub` to `administrator`, **Sign** with the symmetric key.
 6. Send `/admin`, delete `carlos`.
 
-> **Picture goes here (#14).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-jwt-labs/14.png` _then replace this block with_ `![Lab 7 — Algorithm confusion (RS256 to HS256)](/images/portswigger-jwt-labs/14.png)`_._
+> **Picture goes here (#17).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-jwt-labs/17.png` _then replace this block with_ `![Lab 7 — Algorithm confusion (RS256 to HS256)](/images/portswigger-jwt-labs/17.png)`_._
 
 ## Lab 8 — Algorithm confusion with no exposed key
-> **Picture goes here (#15).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `docker run --rm -it portswigger/sig2n <token1> <token2>`.
-> _Save as_ `images/portswigger-jwt-labs/15.png` _then replace this block with_ `![Lab 8 — Algorithm confusion with no exposed key](/images/portswigger-jwt-labs/15.png)`_._
+> **Picture goes here (#18).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `docker run --rm -it portswigger/sig2n <token1> <token2>`.
+> _Save as_ `images/portswigger-jwt-labs/18.png` _then replace this block with_ `![Lab 8 — Algorithm confusion with no exposed key](/images/portswigger-jwt-labs/18.png)`_._
 
 
 **Difficulty:** Expert
@@ -206,6 +218,10 @@ No JWKS endpoint here, so derive the RSA modulus from signatures.
 ```bash
 docker run --rm -it portswigger/sig2n <token1> <token2>
 ```
+
+> **Picture goes here (#19).** Capture this request/response or command step in Burp/terminal. Key line: `docker run --rm -it portswigger/sig2n <token1> <token2>`.
+> _Save as_ `images/portswigger-jwt-labs/19.png` _then replace this block with_ `![Lab 8 — Algorithm confusion with no exposed key](/images/portswigger-jwt-labs/19.png)`_._
+
 
 3. The tool outputs candidate public keys (X.509/PKCS1), each with a tampered JWT. Test each tampered JWT against `/my-account` — a `200` means you found the correct X.509 key (a `302` to `/login` means wrong).
 4. Create a **New Symmetric Key** and set `k` to the Base64 X.509 key.
@@ -240,5 +256,5 @@ docker run --rm -it portswigger/sig2n <token1> <token2>
 - [API Testing labs](/posts/portswigger-api-testing-labs/)
 - [SQL Injection lab series](/posts/portswigger-sqli-part-1-basics/)
 
-> **Picture goes here (#16).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-jwt-labs/16.png` _then replace this block with_ `![Related posts](/images/portswigger-jwt-labs/16.png)`_._
+> **Picture goes here (#20).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-jwt-labs/20.png` _then replace this block with_ `![Related posts](/images/portswigger-jwt-labs/20.png)`_._

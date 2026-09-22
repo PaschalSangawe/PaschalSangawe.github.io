@@ -36,16 +36,20 @@ The live-chat feature sends messages over a WebSocket. The client HTML-encodes `
 <img src=1 onerror='alert(1)'>
 ```
 
+> **Picture goes here (#2).** Capture this step in the decompiler/editor or terminal. Key line: `<img src=1 onerror='alert(1)'>`.
+> _Save as_ `images/portswigger-websockets-labs/2.png` _then replace this block with_ `![Lab 1 — Manipulating WebSocket messages to exploit vulnerabilities](/images/portswigger-websockets-labs/2.png)`_._
+
+
 5. The alert fires — and will also fire in the support agent's browser.
 
-> **Picture goes here (#2).** The intercepted WebSocket frame with the XSS payload and the resulting alert.
-> _Save as_ `images/portswigger-websockets-labs/2.png` _then replace this block with_ `![Lab 1 — Manipulating WebSocket messages to exploit vulnerabilities](/images/portswigger-websockets-labs/2.png)`_._
+> **Picture goes here (#3).** The intercepted WebSocket frame with the XSS payload and the resulting alert.
+> _Save as_ `images/portswigger-websockets-labs/3.png` _then replace this block with_ `![Lab 1 — Manipulating WebSocket messages to exploit vulnerabilities](/images/portswigger-websockets-labs/3.png)`_._
 
 **Lesson:** validate and encode on the **server**, and treat WebSocket messages as untrusted input just like POST bodies. Never rely on client-side encoding.
 
 ## Lab 2 — Cross-site WebSocket hijacking (CSWSH)
-> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<script>`.
-> _Save as_ `images/portswigger-websockets-labs/3.png` _then replace this block with_ `![Lab 2 — Cross-site WebSocket hijacking (CSWSH)](/images/portswigger-websockets-labs/3.png)`_._
+> **Picture goes here (#4).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<script>`.
+> _Save as_ `images/portswigger-websockets-labs/4.png` _then replace this block with_ `![Lab 2 — Cross-site WebSocket hijacking (CSWSH)](/images/portswigger-websockets-labs/4.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -73,18 +77,22 @@ ws.onmessage = function(event) {
 </script>
 ```
 
+> **Picture goes here (#5).** Capture this step in the decompiler/editor or terminal. Key line: `<script>`.
+> _Save as_ `images/portswigger-websockets-labs/5.png` _then replace this block with_ `![Lab 2 — Cross-site WebSocket hijacking (CSWSH)](/images/portswigger-websockets-labs/5.png)`_._
+
+
 6. **View exploit** and poll Collaborator — your own chat history arrives as HTTP request bodies.
 7. **Deliver exploit to victim** and poll again. The victim's history contains a message with their **username and password**.
 8. Log in as the victim.
 
-> **Picture goes here (#4).** Collaborator interactions containing chat messages, including the victim's credentials.
-> _Save as_ `images/portswigger-websockets-labs/4.png` _then replace this block with_ `![Lab 2 — Cross-site WebSocket hijacking (CSWSH)](/images/portswigger-websockets-labs/4.png)`_._
+> **Picture goes here (#6).** Collaborator interactions containing chat messages, including the victim's credentials.
+> _Save as_ `images/portswigger-websockets-labs/6.png` _then replace this block with_ `![Lab 2 — Cross-site WebSocket hijacking (CSWSH)](/images/portswigger-websockets-labs/6.png)`_._
 
 **Why it works:** the browser attaches the victim's cookies to the cross-site WebSocket handshake. Because the server doesn't verify the `Origin` header or require a CSRF token, it accepts the attacker's socket and streams the victim's data back.
 
 ## Lab 3 — Manipulating the WebSocket handshake to exploit vulnerabilities
-> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<img src=1 onerror='alert(1)'>`.
-> _Save as_ `images/portswigger-websockets-labs/5.png` _then replace this block with_ `![Lab 3 — Manipulating the WebSocket handshake to exploit vulnerabilities](/images/portswigger-websockets-labs/5.png)`_._
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<img src=1 onerror='alert(1)'>`.
+> _Save as_ `images/portswigger-websockets-labs/7.png` _then replace this block with_ `![Lab 3 — Manipulating the WebSocket handshake to exploit vulnerabilities](/images/portswigger-websockets-labs/7.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -102,6 +110,10 @@ A blacklist-based XSS filter blocks obvious payloads and the server **bans your 
 <img src=1 onerror='alert(1)'>
 ```
 
+> **Picture goes here (#8).** Capture this step in the decompiler/editor or terminal. Key line: `<img src=1 onerror='alert(1)'>`.
+> _Save as_ `images/portswigger-websockets-labs/8.png` _then replace this block with_ `![Lab 3 — Manipulating the WebSocket handshake to exploit vulnerabilities](/images/portswigger-websockets-labs/8.png)`_._
+
+
 The attack is blocked and the connection is dropped.
 4. Click **Reconnect** — it fails because your IP is now banned.
 5. Add a spoofed address header to the **handshake** to evade the ban:
@@ -110,6 +122,10 @@ The attack is blocked and the connection is dropped.
 X-Forwarded-For: 1.1.1.1
 ```
 
+> **Picture goes here (#9).** Capture this request/response or command step in Burp/terminal. Key line: `X-Forwarded-For: 1.1.1.1`.
+> _Save as_ `images/portswigger-websockets-labs/9.png` _then replace this block with_ `![Lab 3 — Manipulating the WebSocket handshake to exploit vulnerabilities](/images/portswigger-websockets-labs/9.png)`_._
+
+
 6. Click **Connect** — the socket reconnects.
 7. Send an **obfuscated** payload that evades the filter:
 
@@ -117,10 +133,14 @@ X-Forwarded-For: 1.1.1.1
 <img src=1 oNeRrOr=alert`1`>
 ```
 
+> **Picture goes here (#10).** Capture this step in the decompiler/editor or terminal. Key line: `<img src=1 oNeRrOr=alert1>`.
+> _Save as_ `images/portswigger-websockets-labs/10.png` _then replace this block with_ `![Lab 3 — Manipulating the WebSocket handshake to exploit vulnerabilities](/images/portswigger-websockets-labs/10.png)`_._
+
+
 The filter misses the mixed-case attribute and the backtick-call, so the alert fires.
 
-> **Picture goes here (#6).** The spoofed `X-Forwarded-For` handshake reconnecting, then the obfuscated XSS firing.
-> _Save as_ `images/portswigger-websockets-labs/6.png` _then replace this block with_ `![Lab 3 — Manipulating the WebSocket handshake to exploit vulnerabilities](/images/portswigger-websockets-labs/6.png)`_._
+> **Picture goes here (#11).** The spoofed `X-Forwarded-For` handshake reconnecting, then the obfuscated XSS firing.
+> _Save as_ `images/portswigger-websockets-labs/11.png` _then replace this block with_ `![Lab 3 — Manipulating the WebSocket handshake to exploit vulnerabilities](/images/portswigger-websockets-labs/11.png)`_._
 
 **Lessons:** blacklists are fragile — mixed casing and alternative syntax defeat naive filters. Never make security decisions (like bans) based on spoofable client headers such as `X-Forwarded-For`.
 

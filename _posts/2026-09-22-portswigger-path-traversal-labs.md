@@ -39,14 +39,18 @@ No filtering at all.
 ../../../etc/passwd
 ```
 
-The path resolves to `/etc/passwd` and its contents are returned.
-
-> **Picture goes here (#2).** The `filename=../../../etc/passwd` request and the `/etc/passwd` contents in the response.
+> **Picture goes here (#2).** Capture this request/response or command step in Burp/terminal. Key line: `../../../etc/passwd`.
 > _Save as_ `images/portswigger-path-traversal-labs/2.png` _then replace this block with_ `![Lab 1 — File path traversal, simple case](/images/portswigger-path-traversal-labs/2.png)`_._
 
+
+The path resolves to `/etc/passwd` and its contents are returned.
+
+> **Picture goes here (#3).** The `filename=../../../etc/passwd` request and the `/etc/passwd` contents in the response.
+> _Save as_ `images/portswigger-path-traversal-labs/3.png` _then replace this block with_ `![Lab 1 — File path traversal, simple case](/images/portswigger-path-traversal-labs/3.png)`_._
+
 ## Lab 2 — Traversal sequences blocked with absolute path bypass
-> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `/etc/passwd`.
-> _Save as_ `images/portswigger-path-traversal-labs/3.png` _then replace this block with_ `![Lab 2 — Traversal sequences blocked with absolute path bypass](/images/portswigger-path-traversal-labs/3.png)`_._
+> **Picture goes here (#4).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `/etc/passwd`.
+> _Save as_ `images/portswigger-path-traversal-labs/4.png` _then replace this block with_ `![Lab 2 — Traversal sequences blocked with absolute path bypass](/images/portswigger-path-traversal-labs/4.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -58,12 +62,16 @@ The application blocks traversal sequences but treats the provided filename as r
 /etc/passwd
 ```
 
-> **Picture goes here (#4).** `filename=/etc/passwd` returning the file.
-> _Save as_ `images/portswigger-path-traversal-labs/4.png` _then replace this block with_ `![Lab 2 — Traversal sequences blocked with absolute path bypass](/images/portswigger-path-traversal-labs/4.png)`_._
+> **Picture goes here (#5).** Capture this request/response or command step in Burp/terminal. Key line: `/etc/passwd`.
+> _Save as_ `images/portswigger-path-traversal-labs/5.png` _then replace this block with_ `![Lab 2 — Traversal sequences blocked with absolute path bypass](/images/portswigger-path-traversal-labs/5.png)`_._
+
+
+> **Picture goes here (#6).** `filename=/etc/passwd` returning the file.
+> _Save as_ `images/portswigger-path-traversal-labs/6.png` _then replace this block with_ `![Lab 2 — Traversal sequences blocked with absolute path bypass](/images/portswigger-path-traversal-labs/6.png)`_._
 
 ## Lab 3 — Traversal sequences stripped non-recursively
-> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `....//....//....//etc/passwd`.
-> _Save as_ `images/portswigger-path-traversal-labs/5.png` _then replace this block with_ `![Lab 3 — Traversal sequences stripped non-recursively](/images/portswigger-path-traversal-labs/5.png)`_._
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `....//....//....//etc/passwd`.
+> _Save as_ `images/portswigger-path-traversal-labs/7.png` _then replace this block with_ `![Lab 3 — Traversal sequences stripped non-recursively](/images/portswigger-path-traversal-labs/7.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -75,14 +83,18 @@ The filter removes `../` in a single pass but does not loop, so nested sequences
 ....//....//....//etc/passwd
 ```
 
+> **Picture goes here (#8).** Capture this request/response or command step in Burp/terminal. Key line: `....//....//....//etc/passwd`.
+> _Save as_ `images/portswigger-path-traversal-labs/8.png` _then replace this block with_ `![Lab 3 — Traversal sequences stripped non-recursively](/images/portswigger-path-traversal-labs/8.png)`_._
+
+
 The filter matches the `../` in the middle of each `....//`, deletes it, and `....//` collapses to `../`. The path becomes `../../../etc/passwd`.
 
-> **Picture goes here (#6).** The non-recursive bypass payload and the resulting file read.
-> _Save as_ `images/portswigger-path-traversal-labs/6.png` _then replace this block with_ `![Lab 3 — Traversal sequences stripped non-recursively](/images/portswigger-path-traversal-labs/6.png)`_._
+> **Picture goes here (#9).** The non-recursive bypass payload and the resulting file read.
+> _Save as_ `images/portswigger-path-traversal-labs/9.png` _then replace this block with_ `![Lab 3 — Traversal sequences stripped non-recursively](/images/portswigger-path-traversal-labs/9.png)`_._
 
 ## Lab 4 — Traversal sequences stripped with superfluous URL-decode
-> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `..%252f..%252f..%252fetc/passwd`.
-> _Save as_ `images/portswigger-path-traversal-labs/7.png` _then replace this block with_ `![Lab 4 — Traversal sequences stripped with superfluous URL-decode](/images/portswigger-path-traversal-labs/7.png)`_._
+> **Picture goes here (#10).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `..%252f..%252f..%252fetc/passwd`.
+> _Save as_ `images/portswigger-path-traversal-labs/10.png` _then replace this block with_ `![Lab 4 — Traversal sequences stripped with superfluous URL-decode](/images/portswigger-path-traversal-labs/10.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -94,14 +106,18 @@ The app blocks `../` and then performs an **extra** URL-decode of the input befo
 ..%252f..%252f..%252fetc/passwd
 ```
 
+> **Picture goes here (#11).** Capture this request/response or command step in Burp/terminal. Key line: `..%252f..%252f..%252fetc/passwd`.
+> _Save as_ `images/portswigger-path-traversal-labs/11.png` _then replace this block with_ `![Lab 4 — Traversal sequences stripped with superfluous URL-decode](/images/portswigger-path-traversal-labs/11.png)`_._
+
+
 The first decode turns `%252f` into `%2f`; the second decode turns `%2f` into `/`, yielding `../../../etc/passwd`.
 
-> **Picture goes here (#8).** Double-encoded payload accepted after the app's own decode.
-> _Save as_ `images/portswigger-path-traversal-labs/8.png` _then replace this block with_ `![Lab 4 — Traversal sequences stripped with superfluous URL-decode](/images/portswigger-path-traversal-labs/8.png)`_._
+> **Picture goes here (#12).** Double-encoded payload accepted after the app's own decode.
+> _Save as_ `images/portswigger-path-traversal-labs/12.png` _then replace this block with_ `![Lab 4 — Traversal sequences stripped with superfluous URL-decode](/images/portswigger-path-traversal-labs/12.png)`_._
 
 ## Lab 5 — Validation of start of path
-> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `/var/www/images/../../../etc/passwd`.
-> _Save as_ `images/portswigger-path-traversal-labs/9.png` _then replace this block with_ `![Lab 5 — Validation of start of path](/images/portswigger-path-traversal-labs/9.png)`_._
+> **Picture goes here (#13).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `/var/www/images/../../../etc/passwd`.
+> _Save as_ `images/portswigger-path-traversal-labs/13.png` _then replace this block with_ `![Lab 5 — Validation of start of path](/images/portswigger-path-traversal-labs/13.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -113,14 +129,18 @@ The application transmits the full path and validates that it **starts with** `/
 /var/www/images/../../../etc/passwd
 ```
 
+> **Picture goes here (#14).** Capture this request/response or command step in Burp/terminal. Key line: `/var/www/images/../../../etc/passwd`.
+> _Save as_ `images/portswigger-path-traversal-labs/14.png` _then replace this block with_ `![Lab 5 — Validation of start of path](/images/portswigger-path-traversal-labs/14.png)`_._
+
+
 The string starts with the allowed folder, but the `../` sequences still climb out of it.
 
-> **Picture goes here (#10).** The prefixed traversal payload and the file read.
-> _Save as_ `images/portswigger-path-traversal-labs/10.png` _then replace this block with_ `![Lab 5 — Validation of start of path](/images/portswigger-path-traversal-labs/10.png)`_._
+> **Picture goes here (#15).** The prefixed traversal payload and the file read.
+> _Save as_ `images/portswigger-path-traversal-labs/15.png` _then replace this block with_ `![Lab 5 — Validation of start of path](/images/portswigger-path-traversal-labs/15.png)`_._
 
 ## Lab 6 — Validation of file extension with null byte bypass
-> **Picture goes here (#11).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `../../../etc/passwd%00.png`.
-> _Save as_ `images/portswigger-path-traversal-labs/11.png` _then replace this block with_ `![Lab 6 — Validation of file extension with null byte bypass](/images/portswigger-path-traversal-labs/11.png)`_._
+> **Picture goes here (#16).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `../../../etc/passwd%00.png`.
+> _Save as_ `images/portswigger-path-traversal-labs/16.png` _then replace this block with_ `![Lab 6 — Validation of file extension with null byte bypass](/images/portswigger-path-traversal-labs/16.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -132,8 +152,12 @@ The app requires the supplied filename to end in `.png`. Appending a URL-encoded
 ../../../etc/passwd%00.png
 ```
 
-> **Picture goes here (#12).** The `%00.png` payload and the returned `/etc/passwd`.
-> _Save as_ `images/portswigger-path-traversal-labs/12.png` _then replace this block with_ `![Lab 6 — Validation of file extension with null byte bypass](/images/portswigger-path-traversal-labs/12.png)`_._
+> **Picture goes here (#17).** Capture this request/response or command step in Burp/terminal. Key line: `../../../etc/passwd%00.png`.
+> _Save as_ `images/portswigger-path-traversal-labs/17.png` _then replace this block with_ `![Lab 6 — Validation of file extension with null byte bypass](/images/portswigger-path-traversal-labs/17.png)`_._
+
+
+> **Picture goes here (#18).** The `%00.png` payload and the returned `/etc/passwd`.
+> _Save as_ `images/portswigger-path-traversal-labs/18.png` _then replace this block with_ `![Lab 6 — Validation of file extension with null byte bypass](/images/portswigger-path-traversal-labs/18.png)`_._
 
 ## Bypass cheat sheet
 

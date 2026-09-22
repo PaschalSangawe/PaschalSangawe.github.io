@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# Site is unlisted while being finalised. Remove this file (and the
+# noindex meta in _includes/metadata-hook.html) to allow indexing later.

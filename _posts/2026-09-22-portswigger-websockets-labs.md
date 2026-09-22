@@ -16,6 +16,9 @@ WebSockets give a browser and server a persistent, two-way channel. The interest
 This post covers all **3 PortSwigger WebSocket labs**.
 
 ## Lab 1 — Manipulating WebSocket messages to exploit vulnerabilities
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<img src=1 onerror='alert(1)'>`.
+> _Save as_ `images/portswigger-websockets-labs/1.png` _then replace this block with_ `![Lab 1 — Manipulating WebSocket messages to exploit vulnerabilities](/images/portswigger-websockets-labs/1.png)`_._
+
 
 **Difficulty:** Apprentice
 **Goal:** Trigger XSS in the support agent's browser via a chat message.
@@ -35,11 +38,15 @@ The live-chat feature sends messages over a WebSocket. The client HTML-encodes `
 
 5. The alert fires — and will also fire in the support agent's browser.
 
-> **[Screenshot]** The intercepted WebSocket frame with the XSS payload and the resulting alert.
+> **Picture goes here (#2).** The intercepted WebSocket frame with the XSS payload and the resulting alert.
+> _Save as_ `images/portswigger-websockets-labs/2.png` _then replace this block with_ `![Lab 1 — Manipulating WebSocket messages to exploit vulnerabilities](/images/portswigger-websockets-labs/2.png)`_._
 
 **Lesson:** validate and encode on the **server**, and treat WebSocket messages as untrusted input just like POST bodies. Never rely on client-side encoding.
 
 ## Lab 2 — Cross-site WebSocket hijacking (CSWSH)
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<script>`.
+> _Save as_ `images/portswigger-websockets-labs/3.png` _then replace this block with_ `![Lab 2 — Cross-site WebSocket hijacking (CSWSH)](/images/portswigger-websockets-labs/3.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Exfiltrate the victim's chat history and recover their credentials.
@@ -70,11 +77,15 @@ ws.onmessage = function(event) {
 7. **Deliver exploit to victim** and poll again. The victim's history contains a message with their **username and password**.
 8. Log in as the victim.
 
-> **[Screenshot]** Collaborator interactions containing chat messages, including the victim's credentials.
+> **Picture goes here (#4).** Collaborator interactions containing chat messages, including the victim's credentials.
+> _Save as_ `images/portswigger-websockets-labs/4.png` _then replace this block with_ `![Lab 2 — Cross-site WebSocket hijacking (CSWSH)](/images/portswigger-websockets-labs/4.png)`_._
 
 **Why it works:** the browser attaches the victim's cookies to the cross-site WebSocket handshake. Because the server doesn't verify the `Origin` header or require a CSRF token, it accepts the attacker's socket and streams the victim's data back.
 
 ## Lab 3 — Manipulating the WebSocket handshake to exploit vulnerabilities
+> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<img src=1 onerror='alert(1)'>`.
+> _Save as_ `images/portswigger-websockets-labs/5.png` _then replace this block with_ `![Lab 3 — Manipulating the WebSocket handshake to exploit vulnerabilities](/images/portswigger-websockets-labs/5.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Bypass an XSS filter and an IP ban by tampering with the handshake.
@@ -108,7 +119,8 @@ X-Forwarded-For: 1.1.1.1
 
 The filter misses the mixed-case attribute and the backtick-call, so the alert fires.
 
-> **[Screenshot]** The spoofed `X-Forwarded-For` handshake reconnecting, then the obfuscated XSS firing.
+> **Picture goes here (#6).** The spoofed `X-Forwarded-For` handshake reconnecting, then the obfuscated XSS firing.
+> _Save as_ `images/portswigger-websockets-labs/6.png` _then replace this block with_ `![Lab 3 — Manipulating the WebSocket handshake to exploit vulnerabilities](/images/portswigger-websockets-labs/6.png)`_._
 
 **Lessons:** blacklists are fragile — mixed casing and alternative syntax defeat naive filters. Never make security decisions (like bans) based on spoofable client headers such as `X-Forwarded-For`.
 

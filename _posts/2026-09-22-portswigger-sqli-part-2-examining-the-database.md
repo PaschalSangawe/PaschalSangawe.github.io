@@ -18,6 +18,9 @@ The differences between Oracle and other databases matter, so each pair of labs 
 > **Quick note on comments:** MySQL accepts `#` or `-- ` (with a trailing space) as a comment. Oracle, PostgreSQL and Microsoft SQL Server only accept `-- `.
 
 ## Lab 3 — Database type and version on Oracle
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `'+UNION+SELECT+'abc','def'+FROM+dual--`.
+> _Save as_ `images/portswigger-sqli-part-2-examining-the-database/1.png` _then replace this block with_ `![Lab 3 — Database type and version on Oracle](/images/portswigger-sqli-part-2-examining-the-database/1.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Display the database version string.
@@ -36,9 +39,13 @@ The query returns two columns and the response now shows `abc` and `def`, confir
 
 `v$version` is Oracle's built-in view listing component versions; `BANNER` holds the version text.
 
-> **[Screenshot]** Response showing the Oracle version banner (e.g. `Oracle Database 11.2.0.2.0`).
+> **Picture goes here (#2).** Response showing the Oracle version banner (e.g. `Oracle Database 11.2.0.2.0`).
+> _Save as_ `images/portswigger-sqli-part-2-examining-the-database/2.png` _then replace this block with_ `![Lab 3 — Database type and version on Oracle](/images/portswigger-sqli-part-2-examining-the-database/2.png)`_._
 
 ## Lab 4 — Database type and version on MySQL and Microsoft
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `'+UNION+SELECT+'abc','def'#`.
+> _Save as_ `images/portswigger-sqli-part-2-examining-the-database/3.png` _then replace this block with_ `![Lab 4 — Database type and version on MySQL and Microsoft](/images/portswigger-sqli-part-2-examining-the-database/3.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Display the database version string.
@@ -57,7 +64,13 @@ Then:
 
 The `#` comments out the rest of the original query (use `-- ` instead when targeting Microsoft SQL Server).
 
+> **Picture goes here (#4).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-sqli-part-2-examining-the-database/4.png` _then replace this block with_ `![Lab 4 — Database type and version on MySQL and Microsoft](/images/portswigger-sqli-part-2-examining-the-database/4.png)`_._
+
 ## Lab 5 — Listing database contents on non-Oracle databases
+> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `'+UNION+SELECT+'abc','def'--`.
+> _Save as_ `images/portswigger-sqli-part-2-examining-the-database/5.png` _then replace this block with_ `![Lab 5 — Listing database contents on non-Oracle databases](/images/portswigger-sqli-part-2-examining-the-database/5.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Enumerate the schema, extract credentials, and log in as `administrator`.
@@ -90,7 +103,8 @@ Now dump the usernames and password hashes:
 
 Identify the administrator's hash, then use the lab's password-cracking/decoding helper to recover the plaintext and log in.
 
-> **[Screenshot]** Response listing the `users_*` table columns, then the dumped credentials.
+> **Picture goes here (#6).** Response listing the `users_*` table columns, then the dumped credentials.
+> _Save as_ `images/portswigger-sqli-part-2-examining-the-database/6.png` _then replace this block with_ `![Lab 5 — Listing database contents on non-Oracle databases](/images/portswigger-sqli-part-2-examining-the-database/6.png)`_._
 
 **Steps**
 
@@ -101,6 +115,9 @@ Identify the administrator's hash, then use the lab's password-cracking/decoding
 5. Log in as `administrator`.
 
 ## Lab 6 — Listing database contents on Oracle
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `'+UNION+SELECT+'abc','def'+FROM+dual--`.
+> _Save as_ `images/portswigger-sqli-part-2-examining-the-database/7.png` _then replace this block with_ `![Lab 6 — Listing database contents on Oracle](/images/portswigger-sqli-part-2-examining-the-database/7.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Same as Lab 5, but against Oracle.
@@ -133,7 +150,8 @@ Dump the credentials:
 
 Log in as `administrator` with the recovered password.
 
-> **[Screenshot]** Oracle `all_tables` output showing `USERS_ABCDEF`, followed by the credential dump.
+> **Picture goes here (#8).** Oracle `all_tables` output showing `USERS_ABCDEF`, followed by the credential dump.
+> _Save as_ `images/portswigger-sqli-part-2-examining-the-database/8.png` _then replace this block with_ `![Lab 6 — Listing database contents on Oracle](/images/portswigger-sqli-part-2-examining-the-database/8.png)`_._
 
 ## Cheat sheet
 

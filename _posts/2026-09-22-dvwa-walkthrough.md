@@ -26,6 +26,9 @@ docker run --rm -it -p 80:80 vulnerables/web-dvwa
 Default login: **admin / password**. Set the level under **DVWA Security** (stored in the `security` cookie). Reset the DB between modules.
 
 ## 1. Brute Force
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `POST /vulnerabilities/brute/`.
+> _Save as_ `images/dvwa-walkthrough/1.png` _then replace this block with_ `![1. Brute Force](/images/dvwa-walkthrough/1.png)`_._
+
 
 The login form has no real rate limiting at low/medium.
 
@@ -33,7 +36,13 @@ The login form has no real rate limiting at low/medium.
 - **Medium:** the app sleeps on failure and mis-handles the first failed attempt; still brute-forceable with a slower Intruder, and usernames can be enumerated by response timing.
 - **High:** a CSRF `user_token` plus a random sleep and a lockout after 3 failures. Automate by extracting `user_token` per request and pausing between attempts; tools like `ffuf` with a token-extraction preprocessor or a custom script handle this.
 
+> **Picture goes here (#2).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/2.png` _then replace this block with_ `![1. Brute Force](/images/dvwa-walkthrough/2.png)`_._
+
 ## 2. Command Injection
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `# Low — any separator works`.
+> _Save as_ `images/dvwa-walkthrough/3.png` _then replace this block with_ `![2. Command Injection](/images/dvwa-walkthrough/3.png)`_._
+
 
 Enter a ping target — the input is passed to the shell.
 
@@ -58,7 +67,13 @@ Enter a ping target — the input is passed to the shell.
 
 **Lesson:** blocklists lose. Validate the input as a real IP/hostname and never invoke a shell.
 
+> **Picture goes here (#4).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/4.png` _then replace this block with_ `![2. Command Injection](/images/dvwa-walkthrough/4.png)`_._
+
 ## 3. CSRF
+> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<img src="http://localhost/vulnerabilities/csrf/?password_new=hacked&password_conf=hacked&`.
+> _Save as_ `images/dvwa-walkthrough/5.png` _then replace this block with_ `![3. CSRF](/images/dvwa-walkthrough/5.png)`_._
+
 
 The password-change form can be triggered cross-site.
 
@@ -73,7 +88,13 @@ The password-change form can be triggered cross-site.
 
 **Lesson:** use a per-request, session-bound CSRF token; Referer checks are bypassable.
 
+> **Picture goes here (#6).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/6.png` _then replace this block with_ `![3. CSRF](/images/dvwa-walkthrough/6.png)`_._
+
 ## 4. File Inclusion (LFI / RFI)
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `# Low — LFI`.
+> _Save as_ `images/dvwa-walkthrough/7.png` _then replace this block with_ `![4. File Inclusion (LFI / RFI)](/images/dvwa-walkthrough/7.png)`_._
+
 
 ```text
 # Low — LFI
@@ -96,7 +117,13 @@ The password-change form can be triggered cross-site.
 
 **Lesson:** don't build file paths from user input; use an allow-list of pages, and disable `allow_url_include`/`allow_url_fopen`.
 
+> **Picture goes here (#8).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/8.png` _then replace this block with_ `![4. File Inclusion (LFI / RFI)](/images/dvwa-walkthrough/8.png)`_._
+
 ## 5. File Upload
+> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<?php system($_GET['cmd']); ?>`.
+> _Save as_ `images/dvwa-walkthrough/9.png` _then replace this block with_ `![5. File Upload](/images/dvwa-walkthrough/9.png)`_._
+
 
 - **Low:** upload a PHP shell; it lands in `/hackable/uploads/`:
 
@@ -111,7 +138,13 @@ Request `http://localhost/hackable/uploads/shell.php?cmd=id`.
 
 **Lesson:** validate content, re-encode images, generate safe filenames, and disable script execution in upload directories.
 
+> **Picture goes here (#10).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/10.png` _then replace this block with_ `![5. File Upload](/images/dvwa-walkthrough/10.png)`_._
+
 ## 6. SQL Injection
+> **Picture goes here (#11).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `# Low`.
+> _Save as_ `images/dvwa-walkthrough/11.png` _then replace this block with_ `![6. SQL Injection](/images/dvwa-walkthrough/11.png)`_._
+
 
 ```text
 # Low
@@ -135,7 +168,13 @@ Dump everything with sqlmap: `sqlmap -u "http://localhost/vulnerabilities/sqli/?
 
 **Lesson:** use prepared statements with bound parameters — escaping plus `LIMIT` is not a fix.
 
+> **Picture goes here (#12).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/12.png` _then replace this block with_ `![6. SQL Injection](/images/dvwa-walkthrough/12.png)`_._
+
 ## 7. SQL Injection (Blind)
+> **Picture goes here (#13).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `1' AND '1'='1`.
+> _Save as_ `images/dvwa-walkthrough/13.png` _then replace this block with_ `![7. SQL Injection (Blind)](/images/dvwa-walkthrough/13.png)`_._
+
 
 - **Low:** `1' AND '1'='1` returns a row, `1' AND '1'='2` does not.
 - **Medium:** numeric context, no quotes: `1 AND 1=1`.
@@ -143,7 +182,13 @@ Dump everything with sqlmap: `sqlmap -u "http://localhost/vulnerabilities/sqli/?
 
 Automate character extraction with Burp Intruder (two positions: offset + character) or `sqlmap --technique=B`.
 
+> **Picture goes here (#14).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/14.png` _then replace this block with_ `![7. SQL Injection (Blind)](/images/dvwa-walkthrough/14.png)`_._
+
 ## 8. Weak Session IDs
+> **Picture goes here (#15).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `dvwaSession`.
+> _Save as_ `images/dvwa-walkthrough/15.png` _then replace this block with_ `![8. Weak Session IDs](/images/dvwa-walkthrough/15.png)`_._
+
 
 DVWA generates the `dvwaSession` cookie insecurely:
 
@@ -153,7 +198,13 @@ DVWA generates the `dvwaSession` cookie insecurely:
 
 **Lesson:** session IDs must come from a CSPRNG, not counters, timestamps or hashes of them.
 
+> **Picture goes here (#16).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/16.png` _then replace this block with_ `![8. Weak Session IDs](/images/dvwa-walkthrough/16.png)`_._
+
 ## 9. XSS (DOM-Based)
+> **Picture goes here (#17).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `# Low`.
+> _Save as_ `images/dvwa-walkthrough/17.png` _then replace this block with_ `![9. XSS (DOM-Based)](/images/dvwa-walkthrough/17.png)`_._
+
 
 The language selector writes the `default` value into the DOM.
 
@@ -169,7 +220,13 @@ The language selector writes the `default` value into the DOM.
 
 **Lesson:** never write untrusted data with `innerHTML`/`document.write`; use `textContent`.
 
+> **Picture goes here (#18).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/18.png` _then replace this block with_ `![9. XSS (DOM-Based)](/images/dvwa-walkthrough/18.png)`_._
+
 ## 10. XSS (Reflected)
+> **Picture goes here (#19).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `# Low`.
+> _Save as_ `images/dvwa-walkthrough/19.png` _then replace this block with_ `![10. XSS (Reflected)](/images/dvwa-walkthrough/19.png)`_._
+
 
 ```text
 # Low
@@ -182,7 +239,13 @@ The language selector writes the `default` value into the DOM.
 
 - **High:** output is passed through `htmlspecialchars()` → not exploitable (pivot to DOM XSS).
 
+> **Picture goes here (#20).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/20.png` _then replace this block with_ `![10. XSS (Reflected)](/images/dvwa-walkthrough/20.png)`_._
+
 ## 11. XSS (Stored)
+> **Picture goes here (#21).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<script>alert(1)</script>`.
+> _Save as_ `images/dvwa-walkthrough/21.png` _then replace this block with_ `![11. XSS (Stored)](/images/dvwa-walkthrough/21.png)`_._
+
 
 - **Low:** message/name field `<script>alert(1)</script>` — fires for every visitor.
 - **Medium:** `<script` is stripped; use `<img src=x onerror=alert(1)>`.
@@ -190,7 +253,13 @@ The language selector writes the `default` value into the DOM.
 
 **Lesson:** context-aware output encoding on the server, plus a Content-Security-Policy, is the durable fix.
 
+> **Picture goes here (#22).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/22.png` _then replace this block with_ `![11. XSS (Stored)](/images/dvwa-walkthrough/22.png)`_._
+
 ## 12. CSP Bypass
+> **Picture goes here (#23).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<script src=...>`.
+> _Save as_ `images/dvwa-walkthrough/23.png` _then replace this block with_ `![12. CSP Bypass](/images/dvwa-walkthrough/23.png)`_._
+
 
 - **Low:** the CSP allows scripts from a whitelisted third party; host your JS there and load it with `<script src=...>`.
 - **Medium:** a nonce is used; abuse a self-hosted file (e.g. an uploaded `.js` under `/hackable/uploads/`) with `<script src="/hackable/uploads/x.js">`.
@@ -198,7 +267,13 @@ The language selector writes the `default` value into the DOM.
 
 **Lesson:** a CSP is only as strong as its allow-list; avoid `unsafe-inline` and self-hosted upload paths in `script-src`.
 
+> **Picture goes here (#24).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/24.png` _then replace this block with_ `![12. CSP Bypass](/images/dvwa-walkthrough/24.png)`_._
+
 ## 13. Other modules
+> **Picture goes here (#25).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `?redirect=http://evil.com`.
+> _Save as_ `images/dvwa-walkthrough/25.png` _then replace this block with_ `![13. Other modules](/images/dvwa-walkthrough/25.png)`_._
+
 
 - **Open HTTP Redirect:** `?redirect=http://evil.com` — validate redirect targets against an allow-list.
 - **Insecure CAPTCHA:** low/medium CAPTCHA is bypassable by tampering with the `step`/`passed` parameters; high uses reCAPTCHA.
@@ -222,3 +297,6 @@ The language selector writes the `default` value into the DOM.
 - [PortSwigger File Upload labs](/posts/portswigger-file-upload-labs/)
 
 {% endraw %}
+
+> **Picture goes here (#26).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/dvwa-walkthrough/26.png` _then replace this block with_ `![Related posts](/images/dvwa-walkthrough/26.png)`_._

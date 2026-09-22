@@ -11,6 +11,9 @@ toc: true
 A `UNION SELECT` attack appends a second result set to the original query and returns it in the same response. It only works when the injected query has **the same number of columns** as the original, and the columns we want to display must be of a compatible (usually string) type. These four labs teach exactly that, in order.
 
 ## Lab 7 — Determining the number of columns returned by the query
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `'+ORDER+BY+1--`.
+> _Save as_ `images/portswigger-sqli-part-3-union-attacks/1.png` _then replace this block with_ `![Lab 7 — Determining the number of columns returned by the query](/images/portswigger-sqli-part-3-union-attacks/1.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Work out how many columns the query returns.
@@ -37,9 +40,13 @@ When `ORDER BY 3` triggers an error, the query returns 2 columns. (Use `-- ` com
 
 The first payload that returns a normal page reveals the column count. `NULL` is used because it is type-compatible with every column.
 
-> **[Screenshot]** Repeater tabs showing the error on `ORDER BY 3` and the successful `UNION SELECT NULL,NULL`.
+> **Picture goes here (#2).** Repeater tabs showing the error on `ORDER BY 3` and the successful `UNION SELECT NULL,NULL`.
+> _Save as_ `images/portswigger-sqli-part-3-union-attacks/2.png` _then replace this block with_ `![Lab 7 — Determining the number of columns returned by the query](/images/portswigger-sqli-part-3-union-attacks/2.png)`_._
 
 ## Lab 8 — Finding a column containing text
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `'+UNION+SELECT+NULL,NULL,NULL--`.
+> _Save as_ `images/portswigger-sqli-part-3-union-attacks/3.png` _then replace this block with_ `![Lab 8 — Finding a column containing text](/images/portswigger-sqli-part-3-union-attacks/3.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Find which column(s) can hold string data.
@@ -64,9 +71,13 @@ If the response contains `abcdef`, that first column is string-compatible. If it
 
 In this lab, the first column is numeric (an ID), and the **second** column is the string one — that is where we will place our data in the next lab.
 
-> **[Screenshot]** A response where the injected random string appears in the product title, confirming the text column.
+> **Picture goes here (#4).** A response where the injected random string appears in the product title, confirming the text column.
+> _Save as_ `images/portswigger-sqli-part-3-union-attacks/4.png` _then replace this block with_ `![Lab 8 — Finding a column containing text](/images/portswigger-sqli-part-3-union-attacks/4.png)`_._
 
 ## Lab 9 — Retrieving data from other tables
+> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `'+UNION+SELECT+'abc','def'--`.
+> _Save as_ `images/portswigger-sqli-part-3-union-attacks/5.png` _then replace this block with_ `![Lab 9 — Retrieving data from other tables](/images/portswigger-sqli-part-3-union-attacks/5.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Dump the `users` table and log in as `administrator`.
@@ -85,9 +96,13 @@ Both positions accept strings, so we can pull the `username` and `password` colu
 
 The response now lists every user and their password. Log in as `administrator`.
 
-> **[Screenshot]** Response containing the full credential list for the `users` table.
+> **Picture goes here (#6).** Response containing the full credential list for the `users` table.
+> _Save as_ `images/portswigger-sqli-part-3-union-attacks/6.png` _then replace this block with_ `![Lab 9 — Retrieving data from other tables](/images/portswigger-sqli-part-3-union-attacks/6.png)`_._
 
 ## Lab 10 — Retrieving multiple values in a single column
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `'+UNION+SELECT+NULL,'abc'--`.
+> _Save as_ `images/portswigger-sqli-part-3-union-attacks/7.png` _then replace this block with_ `![Lab 10 — Retrieving multiple values in a single column](/images/portswigger-sqli-part-3-union-attacks/7.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Dump both username and password when only one column can hold text.
@@ -112,7 +127,8 @@ On MySQL use `CONCAT()` instead:
 
 The response shows entries like `administrator~s3cr3t`, so we can still separate the two values and log in as administrator.
 
-> **[Screenshot]** Response showing concatenated `username~password` pairs.
+> **Picture goes here (#8).** Response showing concatenated `username~password` pairs.
+> _Save as_ `images/portswigger-sqli-part-3-union-attacks/8.png` _then replace this block with_ `![Lab 10 — Retrieving multiple values in a single column](/images/portswigger-sqli-part-3-union-attacks/8.png)`_._
 
 ## Takeaways
 

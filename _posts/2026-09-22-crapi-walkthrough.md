@@ -36,6 +36,9 @@ docker compose pull && docker compose up -d
 Register two users (attacker + victim) and capture the `Authorization: Bearer <JWT>` token from login.
 
 ## API1 — Broken Object Level Authorization (BOLA)
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `curl -s http://localhost:8888/identity/api/v2/vehicle/<victimVehicleId>/location \`.
+> _Save as_ `images/crapi-walkthrough/1.png` _then replace this block with_ `![API1 — Broken Object Level Authorization (BOLA)](/images/crapi-walkthrough/1.png)`_._
+
 
 **Access another user's vehicle location.** The vehicle ID is sequential/predictable and the endpoint never checks ownership:
 
@@ -53,7 +56,13 @@ curl -s "http://localhost:8888/workshop/api/mechanic/mechanic_report?report_id=<
 
 **Lesson:** authorize every object access against the authenticated user (`WHERE id=? AND owner_id=?`), and use unpredictable IDs. This is consistently the #1 API risk.
 
+> **Picture goes here (#2).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/crapi-walkthrough/2.png` _then replace this block with_ `![API1 — Broken Object Level Authorization (BOLA)](/images/crapi-walkthrough/2.png)`_._
+
 ## API2 — Broken Authentication (OTP brute force → account takeover)
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `curl -s -X POST http://localhost:8888/identity/api/auth/v2/check-otp \`.
+> _Save as_ `images/crapi-walkthrough/3.png` _then replace this block with_ `![API2 — Broken Authentication (OTP brute force → account takeover)](/images/crapi-walkthrough/3.png)`_._
+
 
 The password-reset flow uses a **4-digit OTP** with no rate limiting. Request a reset for the victim, then brute-force `0000–9999` against the check endpoint with a new password:
 
@@ -67,7 +76,13 @@ A 10,000-key space is trivial to exhaust; the correct OTP resets the victim's pa
 
 **Lesson:** rate-limit OTP verification, use longer/expiring OTPs, bind them to the session, and cap attempts.
 
+> **Picture goes here (#4).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/crapi-walkthrough/4.png` _then replace this block with_ `![API2 — Broken Authentication (OTP brute force → account takeover)](/images/crapi-walkthrough/4.png)`_._
+
 ## API3 — Excessive Data Exposure
+> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `curl -s http://localhost:8888/community/api/v2/community/posts/recent \`.
+> _Save as_ `images/crapi-walkthrough/5.png` _then replace this block with_ `![API3 — Excessive Data Exposure](/images/crapi-walkthrough/5.png)`_._
+
 
 `GET /community/api/v2/community/posts/recent` returns full nested objects — user email, vehicle details and more — far beyond what the UI needs:
 
@@ -80,13 +95,25 @@ The leaked **vehicle ID** here feeds the BOLA attack above — a classic chained
 
 **Lesson:** return only the fields the client needs (use DTOs/serializers), never the raw database object.
 
+> **Picture goes here (#6).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/crapi-walkthrough/6.png` _then replace this block with_ `![API3 — Excessive Data Exposure](/images/crapi-walkthrough/6.png)`_._
+
 ## API4 — Lack of Resources & Rate Limiting
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send.
+> _Save as_ `images/crapi-walkthrough/7.png` _then replace this block with_ `![API4 — Lack of Resources & Rate Limiting](/images/crapi-walkthrough/7.png)`_._
+
 
 Beyond the OTP brute force, there is no meaningful throttling on login, signup, or coupon application. Batch/rapid requests are accepted freely, enabling credential stuffing and resource abuse.
 
 **Lesson:** rate-limit per identity and per IP, add lockouts and CAPTCHA, and monitor for enumeration patterns.
 
+> **Picture goes here (#8).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/crapi-walkthrough/8.png` _then replace this block with_ `![API4 — Lack of Resources & Rate Limiting](/images/crapi-walkthrough/8.png)`_._
+
 ## API5 — Broken Function Level Authorization (BFLA)
+> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `curl -s http://localhost:8888/workshop/api/shop/orders/all \`.
+> _Save as_ `images/crapi-walkthrough/9.png` _then replace this block with_ `![API5 — Broken Function Level Authorization (BFLA)](/images/crapi-walkthrough/9.png)`_._
+
 
 A regular user can call administrative-style functions. For example, an "all orders" endpoint is reachable without an admin role:
 
@@ -99,7 +126,13 @@ Similarly, `DELETE /identity/api/v2/user/videos/{video_id}` can be called for **
 
 **Lesson:** enforce role/function checks server-side on every endpoint; never rely on the UI hiding admin functions.
 
+> **Picture goes here (#10).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/crapi-walkthrough/10.png` _then replace this block with_ `![API5 — Broken Function Level Authorization (BFLA)](/images/crapi-walkthrough/10.png)`_._
+
 ## API6 — Mass Assignment
+> **Picture goes here (#11).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `curl -s -X PUT http://localhost:8888/identity/api/v2/user/videos/<video_id> \`.
+> _Save as_ `images/crapi-walkthrough/11.png` _then replace this block with_ `![API6 — Mass Assignment](/images/crapi-walkthrough/11.png)`_._
+
 
 The video-update endpoint binds submitted JSON onto the object without an allow-list. The `conversion_params` field is later passed to `ffmpeg`, so a mass-assigned value becomes **command injection → RCE**:
 
@@ -113,7 +146,13 @@ Trigger the conversion and the injected command runs server-side.
 
 **Lesson:** bind request data to explicit DTOs/allow-lists; never pass user-controlled parameters into shell/ffmpeg invocations.
 
+> **Picture goes here (#12).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/crapi-walkthrough/12.png` _then replace this block with_ `![API6 — Mass Assignment](/images/crapi-walkthrough/12.png)`_._
+
 ## API7 — Server-Side Request Forgery (SSRF)
+> **Picture goes here (#13).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `curl -s -X POST http://localhost:8888/workshop/api/merchant/contact_mechanic \`.
+> _Save as_ `images/crapi-walkthrough/13.png` _then replace this block with_ `![API7 — Server-Side Request Forgery (SSRF)](/images/crapi-walkthrough/13.png)`_._
+
 
 The "contact mechanic" feature takes a `mechanic_api` URL and fetches it server-side with no validation:
 
@@ -127,17 +166,35 @@ Point it at cloud metadata, internal services, or `crapi-api`/`crapi-web` to rea
 
 **Lesson:** allow-list destination hosts/schemes, resolve and block private/loopback/link-local ranges, and don't follow redirects blindly.
 
+> **Picture goes here (#14).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/crapi-walkthrough/14.png` _then replace this block with_ `![API7 — Server-Side Request Forgery (SSRF)](/images/crapi-walkthrough/14.png)`_._
+
 ## API8 — Security Misconfiguration
+> **Picture goes here (#15).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `OPTIONS`.
+> _Save as_ `images/crapi-walkthrough/15.png` _then replace this block with_ `![API8 — Security Misconfiguration](/images/crapi-walkthrough/15.png)`_._
+
 
 Verbose errors, permissive CORS, and missing hardening across the stack. Always check `OPTIONS`, error bodies and response headers for leaked stack traces, allowed methods and reflected `Origin`.
 
+> **Picture goes here (#16).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/crapi-walkthrough/16.png` _then replace this block with_ `![API8 — Security Misconfiguration](/images/crapi-walkthrough/16.png)`_._
+
 ## API9 — Improper Inventory Management
+> **Picture goes here (#17).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `/identity/api/auth/v2/check-otp`.
+> _Save as_ `images/crapi-walkthrough/17.png` _then replace this block with_ `![API9 — Improper Inventory Management](/images/crapi-walkthrough/17.png)`_._
+
 
 Older API versions remain live alongside current ones — e.g. `/identity/api/auth/v2/check-otp` vs `/v3/check-otp`, and `/workshop/api/v1/...` endpoints. Deprecated versions often lack the fixes applied to newer ones.
 
 **Lesson:** maintain an accurate API inventory, retire old versions, and never assume "v2 is the only one".
 
+> **Picture goes here (#18).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/crapi-walkthrough/18.png` _then replace this block with_ `![API9 — Improper Inventory Management](/images/crapi-walkthrough/18.png)`_._
+
 ## API10 — Unsafe Consumption of Third-Party APIs
+> **Picture goes here (#19).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `curl -s -X POST http://localhost:8888/workshop/api/shop/apply_coupon \`.
+> _Save as_ `images/crapi-walkthrough/19.png` _then replace this block with_ `![API10 — Unsafe Consumption of Third-Party APIs](/images/crapi-walkthrough/19.png)`_._
+
 
 crAPI trusts a **third-party mechanic API** and consumes its responses without validation. By controlling that upstream response (via SSRF or a malicious mechanic service), you can influence crAPI's behaviour and data.
 
@@ -189,3 +246,6 @@ curl -s -X POST http://localhost:8888/workshop/api/shop/apply_coupon \
 - [PortSwigger NoSQL Injection labs](/posts/portswigger-nosql-injection-labs/)
 
 {% endraw %}
+
+> **Picture goes here (#20).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/crapi-walkthrough/20.png` _then replace this block with_ `![Related posts](/images/crapi-walkthrough/20.png)`_._

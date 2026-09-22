@@ -29,6 +29,9 @@ Cookie: session=<victim>
 ```
 
 ## Lab 1 — CORS vulnerability with basic origin reflection
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Origin: https://example.com`.
+> _Save as_ `images/portswigger-cors-labs/1.png` _then replace this block with_ `![Lab 1 — CORS vulnerability with basic origin reflection](/images/portswigger-cors-labs/1.png)`_._
+
 
 **Difficulty:** Apprentice
 **Goal:** Read the administrator's API key.
@@ -66,7 +69,13 @@ function reqListener() {
 
 **Why it works:** `withCredentials = true` sends the victim's cookies, and because the server reflects the attacker origin with credentials allowed, the browser lets the script read the response.
 
+> **Picture goes here (#2).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-cors-labs/2.png` _then replace this block with_ `![Lab 1 — CORS vulnerability with basic origin reflection](/images/portswigger-cors-labs/2.png)`_._
+
 ## Lab 2 — CORS vulnerability with trusted null origin
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<iframe sandbox="allow-scripts allow-top-navigation allow-forms" srcdoc="<script>`.
+> _Save as_ `images/portswigger-cors-labs/3.png` _then replace this block with_ `![Lab 2 — CORS vulnerability with trusted null origin](/images/portswigger-cors-labs/3.png)`_._
+
 
 **Difficulty:** Apprentice
 **Goal:** Same API-key theft, but the server only trusts the literal `null` origin.
@@ -90,7 +99,13 @@ function reqListener() {
 
 > **Why `null` is dangerous:** it is trivially spoofable and also appears in legitimate edge cases (sandboxed iframes, `file://`, some redirects). Never whitelist it.
 
+> **Picture goes here (#4).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-cors-labs/4.png` _then replace this block with_ `![Lab 2 — CORS vulnerability with trusted null origin](/images/portswigger-cors-labs/4.png)`_._
+
 ## Lab 3 — CORS vulnerability with trusted insecure protocols
+> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Origin: http://subdomain.YOUR-LAB-ID.web-security-academy.net`.
+> _Save as_ `images/portswigger-cors-labs/5.png` _then replace this block with_ `![Lab 3 — CORS vulnerability with trusted insecure protocols](/images/portswigger-cors-labs/5.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Steal the API key by chaining CORS trust with an XSS on a trusted subdomain.
@@ -139,3 +154,6 @@ document.location="http://stock.YOUR-LAB-ID.web-security-academy.net/?productId=
 - [SSRF labs](/posts/portswigger-ssrf-labs/)
 - [API Testing labs](/posts/portswigger-api-testing-labs/)
 - [SQL Injection lab series](/posts/portswigger-sqli-part-1-basics/)
+
+> **Picture goes here (#6).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-cors-labs/6.png` _then replace this block with_ `![Related posts](/images/portswigger-cors-labs/6.png)`_._

@@ -36,6 +36,9 @@ Two useful primitives:
 - `administrator'-- ` — comments out the password check in a login query.
 
 ## Lab 1 — SQL injection vulnerability in WHERE clause allowing retrieval of hidden data
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `SELECT * FROM products WHERE category = '<input>' AND released = 1`.
+> _Save as_ `images/portswigger-sqli-part-1-basics/1.png` _then replace this block with_ `![Lab 1 — SQL injection vulnerability in WHERE clause allowing retrieval of hidden data](/images/portswigger-sqli-part-1-basics/1.png)`_._
+
 
 **Difficulty:** Apprentice
 **Goal:** Display all products, including those that are unreleased.
@@ -62,7 +65,8 @@ SELECT * FROM products WHERE category = '' OR 1=1-- ' AND released = 1
 
 Because `1=1` is always true, the `WHERE` clause matches every row, and the trailing `AND released = 1` is commented out. The response now lists unreleased products as well.
 
-> **[Screenshot]** Burp Repeater request with `category=Gifts'+OR+1=1--` and the response containing unreleased products.
+> **Picture goes here (#2).** Burp Repeater request with `category=Gifts'+OR+1=1--` and the response containing unreleased products.
+> _Save as_ `images/portswigger-sqli-part-1-basics/2.png` _then replace this block with_ `![Lab 1 — SQL injection vulnerability in WHERE clause allowing retrieval of hidden data](/images/portswigger-sqli-part-1-basics/2.png)`_._
 
 **Steps**
 
@@ -72,6 +76,9 @@ Because `1=1` is always true, the `WHERE` clause matches every row, and the trai
 4. Send it. The response contains products that were previously hidden.
 
 ## Lab 2 — SQL injection vulnerability allowing login bypass
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `SELECT * FROM users WHERE username = '<user>' AND password = '<pass>'`.
+> _Save as_ `images/portswigger-sqli-part-1-basics/3.png` _then replace this block with_ `![Lab 2 — SQL injection vulnerability allowing login bypass](/images/portswigger-sqli-part-1-basics/3.png)`_._
+
 
 **Difficulty:** Apprentice
 **Goal:** Log in as the `administrator` user without knowing the password.
@@ -97,7 +104,8 @@ SELECT * FROM users WHERE username = 'administrator'-- ' AND password = ''
 
 The `--` comments out the password condition, so the query returns the administrator row and we are logged in.
 
-> **[Screenshot]** Login request with username `administrator'--`, and the resulting "Your username is: administrator" account page.
+> **Picture goes here (#4).** Login request with username `administrator'--`, and the resulting "Your username is: administrator" account page.
+> _Save as_ `images/portswigger-sqli-part-1-basics/4.png` _then replace this block with_ `![Lab 2 — SQL injection vulnerability allowing login bypass](/images/portswigger-sqli-part-1-basics/4.png)`_._
 
 **Steps**
 

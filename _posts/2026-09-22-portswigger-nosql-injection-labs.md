@@ -18,6 +18,9 @@ This post covers all **4 PortSwigger NoSQL injection labs**, from login bypass t
 {% raw %}
 
 ## Lab 1 — Exploiting NoSQL operator injection to bypass authentication
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `{ "username": {"$ne": ""}, "password": "peter" }`.
+> _Save as_ `images/portswigger-nosql-injection-labs/1.png` _then replace this block with_ `![Lab 1 — Exploiting NoSQL operator injection to bypass authentication](/images/portswigger-nosql-injection-labs/1.png)`_._
+
 
 **Difficulty:** Apprentice
 **Goal:** Log in as the administrator without a password.
@@ -45,11 +48,15 @@ Login succeeds. The regex operator also works:
 
 4. This logs you in as the administrator.
 
-> **[Screenshot]** The `{"$regex":"admin.*"}` + `{"$ne":""}` login request and the admin session.
+> **Picture goes here (#2).** The `{"$regex":"admin.*"}` + `{"$ne":""}` login request and the admin session.
+> _Save as_ `images/portswigger-nosql-injection-labs/2.png` _then replace this block with_ `![Lab 1 — Exploiting NoSQL operator injection to bypass authentication](/images/portswigger-nosql-injection-labs/2.png)`_._
 
 **Why it works:** the server passes the JSON straight into the query, so `$ne` / `$regex` change the query's meaning instead of being treated as literal text.
 
 ## Lab 2 — Exploiting NoSQL injection to extract data (detection)
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Gifts'+'`.
+> _Save as_ `images/portswigger-nosql-injection-labs/3.png` _then replace this block with_ `![Lab 2 — Exploiting NoSQL injection to extract data (detection)](/images/portswigger-nosql-injection-labs/3.png)`_._
+
 
 **Difficulty:** Apprentice
 **Goal:** Detect server-side JavaScript injection and retrieve hidden products.
@@ -80,9 +87,13 @@ Gifts'||1||'
 
 Load the response in the browser to confirm and solve.
 
-> **[Screenshot]** The syntax error, the boolean probes, and `Gifts'||1||'` returning hidden products.
+> **Picture goes here (#4).** The syntax error, the boolean probes, and `Gifts'||1||'` returning hidden products.
+> _Save as_ `images/portswigger-nosql-injection-labs/4.png` _then replace this block with_ `![Lab 2 — Exploiting NoSQL injection to extract data (detection)](/images/portswigger-nosql-injection-labs/4.png)`_._
 
 ## Lab 3 — Exploiting NoSQL injection to extract data (blind)
+> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `administrator' && this.password.length < 30 || 'a'=='b`.
+> _Save as_ `images/portswigger-nosql-injection-labs/5.png` _then replace this block with_ `![Lab 3 — Exploiting NoSQL injection to extract data (blind)](/images/portswigger-nosql-injection-labs/5.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Extract the administrator's password character by character.
@@ -109,9 +120,13 @@ administrator' && this.password[§0§]=='§a§
 
 4. Log in as administrator with the recovered password.
 
-> **[Screenshot]** The length probe and the Intruder results revealing each character.
+> **Picture goes here (#6).** The length probe and the Intruder results revealing each character.
+> _Save as_ `images/portswigger-nosql-injection-labs/6.png` _then replace this block with_ `![Lab 3 — Exploiting NoSQL injection to extract data (blind)](/images/portswigger-nosql-injection-labs/6.png)`_._
 
 ## Lab 4 — Exploiting NoSQL operator injection to extract unknown fields
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `{"username":"carlos","password":{"$ne":"invalid"}, "$where": "0"}`.
+> _Save as_ `images/portswigger-nosql-injection-labs/7.png` _then replace this block with_ `![Lab 4 — Exploiting NoSQL operator injection to extract unknown fields](/images/portswigger-nosql-injection-labs/7.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Find a hidden password-reset token field and take over Carlos's account.
@@ -148,7 +163,8 @@ administrator' && this.password[§0§]=='§a§
 
 6. Submit it: `GET /forgot-password?YOURTOKENNAME=TOKENVALUE`, change Carlos's password, log in as `carlos`.
 
-> **[Screenshot]** The `$where` true/false probes, the key enumeration, and the recovered reset token.
+> **Picture goes here (#8).** The `$where` true/false probes, the key enumeration, and the recovered reset token.
+> _Save as_ `images/portswigger-nosql-injection-labs/8.png` _then replace this block with_ `![Lab 4 — Exploiting NoSQL operator injection to extract unknown fields](/images/portswigger-nosql-injection-labs/8.png)`_._
 
 **Why it works:** `$where` evaluates attacker-supplied JavaScript in the database, letting you introspect object keys and values even when no data is returned directly.
 

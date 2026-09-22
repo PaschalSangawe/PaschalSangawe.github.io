@@ -13,6 +13,9 @@ APIs are where modern applications hide their real attack surface. The front-end
 This post covers all **5 PortSwigger API testing labs**. It maps closely to OWASP API Security Top 10 items such as API9 (Improper Inventory Management) and API3 (Broken Object Property Level Authorization).
 
 ## Lab 1 — Exploiting an API endpoint using documentation
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `carlos`.
+> _Save as_ `images/portswigger-api-testing-labs/1.png` _then replace this block with_ `![Lab 1 — Exploiting an API endpoint using documentation](/images/portswigger-api-testing-labs/1.png)`_._
+
 
 **Difficulty:** Apprentice
 **Goal:** Find the API documentation and use it to delete `carlos`.
@@ -28,11 +31,15 @@ Applications often expose machine-readable or interactive documentation that rev
 5. Right-click the response → *Show response in browser*, copy the URL, and open it. The documentation is interactive.
 6. Click the `DELETE` row, enter `carlos`, and click **Send request**.
 
-> **[Screenshot]** The generated API documentation with the DELETE action for `carlos`.
+> **Picture goes here (#2).** The generated API documentation with the DELETE action for `carlos`.
+> _Save as_ `images/portswigger-api-testing-labs/2.png` _then replace this block with_ `![Lab 1 — Exploiting an API endpoint using documentation](/images/portswigger-api-testing-labs/2.png)`_._
 
 **Lesson:** enumerate documentation paths (`/api`, `/swagger`, `/openapi.json`, `/api-docs`) and trim path segments to find parent endpoints.
 
 ## Lab 2 — Finding and exploiting an unused API endpoint
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Content-Type: application/json`.
+> _Save as_ `images/portswigger-api-testing-labs/3.png` _then replace this block with_ `![Lab 2 — Finding and exploiting an unused API endpoint](/images/portswigger-api-testing-labs/3.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Buy an expensive product for free by abusing an unused `PATCH` method.
@@ -54,11 +61,15 @@ Content-Type: application/json
 8. Send `{"price":0}`.
 9. Reload the product page — the price is now `$0.00`. Add it to the basket and place the order.
 
-> **[Screenshot]** The `PATCH /api/products/1/price` request setting `{"price":0}` and the free checkout.
+> **Picture goes here (#4).** The `PATCH /api/products/1/price` request setting `{"price":0}` and the free checkout.
+> _Save as_ `images/portswigger-api-testing-labs/4.png` _then replace this block with_ `![Lab 2 — Finding and exploiting an unused API endpoint](/images/portswigger-api-testing-labs/4.png)`_._
 
 **Lesson:** enumerate HTTP methods with `OPTIONS`/`OPTIONS *`, and never rely on the UI to define what a resource supports. Price/write endpoints must enforce authorization and validation server-side.
 
 ## Lab 3 — Exploiting a mass assignment vulnerability
+> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `{`.
+> _Save as_ `images/portswigger-api-testing-labs/5.png` _then replace this block with_ `![Lab 3 — Exploiting a mass assignment vulnerability](/images/portswigger-api-testing-labs/5.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Get a 100% discount by injecting a parameter the front-end never sends.
@@ -90,11 +101,15 @@ Mass assignment happens when the server binds all submitted JSON fields to an ob
 6. Set `percentage` to the string `"x"` → a validation error, proving the value is processed.
 7. Set `percentage` to `100` and send → the order succeeds for free.
 
-> **[Screenshot]** The mass-assigned `chosen_discount` request and the successful discount.
+> **Picture goes here (#6).** The mass-assigned `chosen_discount` request and the successful discount.
+> _Save as_ `images/portswigger-api-testing-labs/6.png` _then replace this block with_ `![Lab 3 — Exploiting a mass assignment vulnerability](/images/portswigger-api-testing-labs/6.png)`_._
 
 **Lesson:** never bind request JSON directly onto internal objects; use explicit DTOs/allow-lists of writable fields.
 
 ## Lab 4 — Exploiting server-side parameter pollution in a query string
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `username=administrator               → normal response`.
+> _Save as_ `images/portswigger-api-testing-labs/7.png` _then replace this block with_ `![Lab 4 — Exploiting server-side parameter pollution in a query string](/images/portswigger-api-testing-labs/7.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Inject an internal `field` parameter to leak the admin's password reset token and take over the account.
@@ -133,9 +148,13 @@ The response now contains the administrator's **reset token**. Browse to the res
 
 Set a new password, log in as administrator, and delete `carlos`.
 
-> **[Screenshot]** The `field=reset_token` response leaking the admin token and the password reset page.
+> **Picture goes here (#8).** The `field=reset_token` response leaking the admin token and the password reset page.
+> _Save as_ `images/portswigger-api-testing-labs/8.png` _then replace this block with_ `![Lab 4 — Exploiting server-side parameter pollution in a query string](/images/portswigger-api-testing-labs/8.png)`_._
 
 ## Lab 5 — Exploiting server-side parameter pollution in a REST URL
+> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `username=administrator#      → "Invalid route"        (# truncates the path)`.
+> _Save as_ `images/portswigger-api-testing-labs/9.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/9.png)`_._
+
 
 **Difficulty:** Expert
 **Goal:** Same account takeover, but the injection point is a REST **path**.
@@ -192,7 +211,8 @@ This returns the reset token. Use the JS-identified endpoint:
 
 Set a new admin password, log in, and delete `carlos`.
 
-> **[Screenshot]** The `openapi.json` leak and the version-overridden `passwordResetToken` response.
+> **Picture goes here (#10).** The `openapi.json` leak and the version-overridden `passwordResetToken` response.
+> _Save as_ `images/portswigger-api-testing-labs/10.png` _then replace this block with_ `![Lab 5 — Exploiting server-side parameter pollution in a REST URL](/images/portswigger-api-testing-labs/10.png)`_._
 
 ## API testing cheat sheet
 

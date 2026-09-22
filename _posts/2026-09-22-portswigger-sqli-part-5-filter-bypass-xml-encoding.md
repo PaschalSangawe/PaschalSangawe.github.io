@@ -11,6 +11,9 @@ toc: true
 The final lab (17) is different in two ways: the injection point is inside an **XML body**, and a **WAF** inspects the request for SQL keywords. The trick is to encode the payload as XML character entities, which the XML parser decodes *after* the WAF has already inspected the raw request.
 
 ## Lab 17 — SQL injection with filter bypass via XML encoding
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<?xml version="1.0" encoding="UTF-8"?>`.
+> _Save as_ `images/portswigger-sqli-part-5-filter-bypass-xml-encoding/1.png` _then replace this block with_ `![Lab 17 — SQL injection with filter bypass via XML encoding](/images/portswigger-sqli-part-5-filter-bypass-xml-encoding/1.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Extract the administrator credentials through a stock-check request and log in.
@@ -72,7 +75,8 @@ The query only returns a single column (adding a second column makes the applica
 
 Send it and the response contains the usernames and passwords separated by `~`.
 
-> **[Screenshot]** Repeater request with the `hex_entities` wrapper and the response containing `administrator~<password>`.
+> **Picture goes here (#2).** Repeater request with the `hex_entities` wrapper and the response containing `administrator~<password>`.
+> _Save as_ `images/portswigger-sqli-part-5-filter-bypass-xml-encoding/2.png` _then replace this block with_ `![Step 4 — Build the exploit](/images/portswigger-sqli-part-5-filter-bypass-xml-encoding/2.png)`_._
 
 ### Step 5 — Log in
 

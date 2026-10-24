@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>BAC Test Harness</title>
+<style>
+  :root { color-scheme: dark; }
+  body { font: 14px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+         margin: 24px; background: #0f1115; color: #d7dae0; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  p.note { color: #8b93a1; margin: 0 0 18px; }
+  label { display: block; margin: 14px 0 4px; color: #aeb6c2; }
+  input[type=text], textarea { width: 100%; box-sizing: border-box; background: #171a21;
+    color: #e6e9ef; border: 1px solid #2a2f3a; border-radius: 6px; padding: 8px; }
+  textarea { min-height: 84px; resize: vertical; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  button { background: #1f6feb; color: #fff; border: 0; border-radius: 6px;
+    padding: 8px 12px; cursor: pointer; }
+  button.secondary { background: #2a2f3a; }
+  button:disabled { opacity: .5; cursor: default; }
+  #log { white-space: pre-wrap; background: #0a0c10; border: 1px solid #2a2f3a;
+    border-radius: 6px; padding: 12px; min-height: 160px; margin-top: 14px; }
+  #frameWrap { margin-top: 14px; border: 1px dashed #2a2f3a; padding: 8px; }
+  iframe { width: 100%; height: 360px; border: 0; background: #fff; }
+  .ok { color: #7ee787; } .bad { color: #ff7b72; } .warn { color: #d29922; }
+</style>
+</head>
+<body>
+<h1>BAC Test Harness</h1>
+<p class="note">Authorized testing only. The target is read from the URL fragment and is never sent to this page's host.
+Use only against assets you are authorized to test.</p>
+
+<label for="target">Target URL</label>
+<input id="target" type="text" spellcheck="false" placeholder="https://target.example/securityv7/auth/lookup">
+
+<div class="row">
+  <button id="corsGet">CORS GET (credentials)</button>
+  <button id="corsPost">CORS POST JSON</button>
+  <button id="noCorsPost" class="secondary">No-CORS POST text/plain</button>
+  <button id="frameBtn" class="secondary">Frame test</button>
+  <button id="openBtn" class="secondary">Open target</button>
+  <button id="clearBtn" class="secondary">Clear log</button>
+</div>
+
+<label for="body">POST body (JSON or text)</label>
+<textarea id="body" spellcheck="false">{}</textarea>
+
+<div id="frameWrap" hidden><iframe id="frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe></div>
+<div id="log"></div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const targetEl = $('target');
+  const bodyEl = $('body');
+  const logEl = $('log');
+
+  function log(kind, msg) {
+    const prefix = kind === 'ok' ? '[ok] ' : kind === 'bad' ? '[blocked] ' : kind === 'warn' ? '[note] ' : '[..] ';
+    logEl.textContent += prefix + msg + '\n';
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function target() {
+    const t = targetEl.value.trim();
+    if (!t) { log('bad', 'No target URL entered.'); return null; }
+    try { new URL(t); } catch { log('bad', 'Target is not a valid absolute URL.'); return null; }
+    return t;
+  }
+
+  function readFragment() {
+    const h = location.hash.replace(/^#/, '');
+    const p = new URLSearchParams(h);
+    const t = p.get('target');
+    if (t) { targetEl.value = t; log('note', 'Target loaded from URL fragment.'); }
+  }
+
+  async function corsFetch(method, withBody) {
+    const t = target();
+    if (!t) return;
+    const init = {
+      method,
+      credentials: 'include',
+      mode: 'cors',
+      cache: 'no-store',
+      redirect: 'follow'
+    };
+    if (withBody) {
+      init.headers = { 'Content-Type': 'application/json' };
+      init.body = bodyEl.value || '{}';
+    }
+    log('note', method + ' ' + t);
+    try {
+      const r = await fetch(t, init);
+      log('ok', 'response type=' + r.type + ' status=' + r.status + ' ' + r.statusText);
+      const text = await r.text();
+      log('ok', 'readable body (' + text.length + ' bytes): ' + text.slice(0, 500).replace(/\s+/g, ' '));
+    } catch (e) {
+      log('bad', 'fetch failed: ' + (e && e.message ? e.message : String(e)));
+      log('warn', 'A CORS failure means the response was not readable from this origin; it does not by itself prove the request was not sent.');
+    }
+  }
+
+  async function noCorsPost() {
+    const t = target();
+    if (!t) return;
+    log('note', 'no-cors POST text/plain ' + t);
+    try {
+      await fetch(t, {
+        method: 'POST',
+        mode: 'no-cors',
+        credentials: 'include',
+        headers: { 'Content-Type': 'text/plain' },
+        body: bodyEl.value || ''
+      });
+      log('ok', 'opaque request completed (status not readable by design).');
+    } catch (e) {
+      log('bad', 'no-cors POST failed: ' + (e && e.message ? e.message : String(e)));
+    }
+  }
+
+  function frameTest() {
+    const t = target();
+    if (!t) return;
+    const wrap = $('frameWrap');
+    const f = $('frame');
+    wrap.hidden = false;
+    log('note', 'framing ' + t + ' (X-Frame-Options / CSP frame-ancestors will decide)');
+    f.onload = () => log('warn', 'iframe load event fired; inspect whether the target rendered or an error page is shown.');
+    f.onerror = () => log('bad', 'iframe error event fired.');
+    f.src = t;
+  }
+
+  $('corsGet').addEventListener('click', () => corsFetch('GET', false));
+  $('corsPost').addEventListener('click', () => corsFetch('POST', true));
+  $('noCorsPost').addEventListener('click', noCorsPost);
+  $('frameBtn').addEventListener('click', frameTest);
+  $('openBtn').addEventListener('click', () => {
+    const t = target();
+    if (t) window.open(t, '_blank', 'noopener,noreferrer');
+  });
+  $('clearBtn').addEventListener('click', () => { logEl.textContent = ''; });
+  window.addEventListener('hashchange', readFragment);
+  readFragment();
+})();
+</script>
+</body>
+</html>
